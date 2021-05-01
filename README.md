@@ -1,8 +1,8 @@
 # autumn
 
-Experimental Netty-based web server framework.
+Experimental Netty-based application/web framework.
 
-An example application can be seen [here](https://github.com/queer/autumn/blob/mistress/autumn-example/src/main/java/gg/amy/autumn/example/Example.java).
+An example application can be seen [here](https://github.com/queer/autumn/tree/mistress/autumn-example).
 
 ## Components
 
@@ -10,3 +10,10 @@ An example application can be seen [here](https://github.com/queer/autumn/blob/m
 - `autumn-di`: Dependency injection framework.
 - `autumn-web`: Web framework
 - `autumn-example`: Example application
+
+## What doesn't work
+
+- Multipart
+- Websockets
+- Anything databases, lol
+- HTTP/2
