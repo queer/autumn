@@ -1,9 +1,6 @@
 package gg.amy.autumn.di;
 
-import gg.amy.autumn.di.annotation.Component;
-import gg.amy.autumn.di.annotation.Depends;
-import gg.amy.autumn.di.annotation.Inject;
-import gg.amy.autumn.di.annotation.Singleton;
+import gg.amy.autumn.di.annotation.*;
 import gg.amy.autumn.di.util.DirectedGraph;
 import gg.amy.autumn.di.util.TopologicalSort;
 import io.github.classgraph.ClassGraph;
@@ -12,8 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author amy
@@ -23,6 +23,7 @@ public final class AutumnDI {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Collection<Class<?>> components = new HashSet<>();
     private final Map<Class<?>, Object> singletons = new HashMap<>();
+    private final Map<Class<?>, Function<Class<?>, Object>> creators = new HashMap<>();
 
     private final ScanResult graph;
 
@@ -55,10 +56,51 @@ public final class AutumnDI {
                         }
                     } else {
                         if(cls.isAnnotationPresent(Depends.class)) {
-                            throw new IllegalStateException(String.format("Class %s is annotated @Depends, but is not @Singleton!", cls.getName()));
+                            throw new IllegalStateException(String.format("Class %s is annotated @Depends, but is not @Singleton.", cls.getName()));
                         }
                         components.add(cls);
                         logger.info("Loaded component: {}", cls.getName());
+                    }
+                });
+
+        graph.getClassesWithMethodAnnotation(Creator.class.getName())
+                .getNames()
+                .stream()
+                .map(c -> {
+                    try {
+                        return Class.forName(c);
+                    } catch(final ClassNotFoundException e) {
+                        throw new IllegalStateException(e);
+                    }
+                })
+                .forEach(c -> {
+                    final var lookup = MethodHandles.lookup();
+                    for(final var m : c.getDeclaredMethods()) {
+                        if(m.isAnnotationPresent(Creator.class)) {
+                            if(!Modifier.isStatic(m.getModifiers())) {
+                                logger.error("Couldn't load @Creator method {}#{}: Method is not static.", c.getName(), m.getName());
+                                continue;
+                            }
+                            if(m.getParameterCount() != 1 || !m.getParameterTypes()[0].equals(Class.class)) {
+                                logger.error("Couldn't load @Creator method {}#{}: Method does not take a single `Class<?>` param.", c.getName(), m.getName());
+                                continue;
+                            }
+                            try {
+                                m.setAccessible(true);
+                                final var handle = lookup.unreflect(m);
+                                final var returnType = m.getReturnType();
+                                creators.put(returnType, target -> {
+                                    try {
+                                        return handle.invoke(target);
+                                    } catch(final Throwable e) {
+                                        throw new IllegalStateException(e);
+                                    }
+                                });
+                            } catch(final IllegalAccessException e) {
+                                logger.error("Couldn't load @Creator method {}#{}:", c.getName(), m.getName(), e);
+                            }
+                            logger.info("Loaded @Creator method {}#{}.", c.getName(), m.getName());
+                        }
                     }
                 });
 
@@ -67,7 +109,7 @@ public final class AutumnDI {
         for(final var dep : deps) {
             try {
                 singletons.put(dep, dep.getDeclaredConstructor().newInstance());
-                logger.info("Loaded new singleton component: {}", dep.getName());
+                logger.info("Loaded new singleton component: {}.", dep.getName());
             } catch(final InstantiationException | NoSuchMethodException | InvocationTargetException
                     | IllegalAccessException e) {
                 e.printStackTrace();
@@ -82,15 +124,31 @@ public final class AutumnDI {
     }
 
     public AutumnDI finish() {
-        logger.info("Done!");
+        logger.info("Done.");
         graph.close();
         return this;
     }
 
+    /**
+     * @see #injectComponents(Object, Map)
+     */
     public final void injectComponents(final Object component) {
         injectComponents(component, new HashMap<>());
     }
 
+    /**
+     * <p>Injects components into the specified object, using the supplied
+     * context map.</p>
+     * <p>Any fields in the passed object that are annotated with
+     * {@link Inject} will automatically have values injected into them.
+     * Injection will load values from the context map first, if possible, and
+     * only if it cannot find a value in the context will it fall back to the
+     * standard component loading flow.</p>
+     *
+     * @param object The object into which values will be injected.
+     * @param ctx    The injection context.
+     * @see #getComponent(Class, Class, Map)
+     */
     public final void injectComponents(final Object object, final Map<Class<?>, ?> ctx) {
         for(final var field : object.getClass().getDeclaredFields()) {
             try {
@@ -101,7 +159,7 @@ public final class AutumnDI {
                     if(ctxMatch.isPresent()) {
                         field.set(object, ctx.get(ctxMatch.get()));
                     } else {
-                        final Optional<?> located = getComponent(type, ctx);
+                        final Optional<?> located = getComponent(object.getClass(), type, ctx);
                         if(located.isPresent()) {
                             field.set(object, located.get());
                         } else {
@@ -116,33 +174,76 @@ public final class AutumnDI {
         }
     }
 
-    public final <T> Optional<T> getComponent(final Class<T> cls) {
-        return getComponent(cls, new HashMap<>());
+    /**
+     * @see #getComponent(Class, Class, Map)
+     */
+    @Nonnull
+    public final <T, E> Optional<T> getComponent(@Nonnull final Class<E> source, @Nonnull final Class<T> cls) {
+        return getComponent(source, cls, new HashMap<>());
     }
 
+    /**
+     * <p>Locates a component of the given type, first searching the context
+     * map and then falling back onto singleton components, instanced
+     * components, and finally creator methods.</p>
+     *
+     * @param cls The component type to find.
+     * @param ctx The context map.
+     * @param <T> The type of the class.
+     * @return An {@link Optional} that may contain a matching component.
+     */
+    @Nonnull
     @SuppressWarnings({"unchecked", "DuplicatedCode"})
-    public final <T> Optional<T> getComponent(final Class<T> cls, final Map<Class<?>, ?> ctx) {
+    public final <T, E> Optional<T> getComponent(@Nonnull final Class<E> source, @Nonnull final Class<T> cls,
+                                                 @Nonnull final Map<Class<?>, ?> ctx) {
+        // Search context
+        if(ctx.containsKey(cls)) {
+            return Optional.of((T) ctx.get(cls));
+        }
+        final var fuzzyCtxMatch = ctx.keySet().stream().filter(cls::isAssignableFrom).findFirst();
+        if(fuzzyCtxMatch.isPresent()) {
+            return Optional.of((T) ctx.get(fuzzyCtxMatch.get()));
+        }
+
+        // Search singletons
         if(singletons.containsKey(cls)) {
             return Optional.of((T) singletons.get(cls));
+        }
+        final var fuzzyMatch = singletons.keySet().stream().filter(cls::isAssignableFrom).findFirst();
+        if(fuzzyMatch.isPresent()) {
+            return Optional.of((T) singletons.get(fuzzyMatch.get()));
+        }
+
+        // Search instanced components
+        final Optional<Class<?>> comp;
+        if(components.contains(cls)) {
+            comp = Optional.of(cls);
         } else {
-            final Optional<Class<?>> first = singletons.keySet().stream().filter(cls::isAssignableFrom).findFirst();
-            if(first.isPresent()) {
-                return Optional.of((T) singletons.get(first.get()));
-            } else {
-                final Optional<Class<?>> comp = components.stream().filter(cls::isAssignableFrom).findFirst();
-                if(comp.isPresent()) {
-                    try {
-                        final Object instance = comp.get().getDeclaredConstructor().newInstance();
-                        injectComponents(instance, ctx);
-                        return Optional.of((T) instance);
-                    } catch(final InstantiationException | NoSuchMethodException | InvocationTargetException
-                            | IllegalAccessException e) {
-                        throw new IllegalStateException(e);
-                    }
-                } else {
-                    return Optional.empty();
-                }
+            comp = components.stream().filter(cls::isAssignableFrom).findFirst();
+        }
+
+        if(comp.isPresent()) {
+            try {
+                final Object instance = comp.get().getDeclaredConstructor().newInstance();
+                injectComponents(instance, ctx);
+                return Optional.of((T) instance);
+            } catch(final InstantiationException | NoSuchMethodException | InvocationTargetException
+                    | IllegalAccessException e) {
+                throw new IllegalStateException(e);
             }
         }
+
+        // Search creator methods
+        if(creators.containsKey(cls)) {
+            return Optional.of((T) creators.get(cls).apply(source));
+        }
+        final var fuzzyCreatorMatch = creators.keySet().stream().filter(cls::isAssignableFrom).findFirst();
+        //noinspection OptionalIsPresent
+        if(fuzzyCreatorMatch.isPresent()) {
+            return Optional.of((T) creators.get(fuzzyCreatorMatch.get()).apply(source));
+        }
+
+        // Give up
+        return Optional.empty();
     }
 }

@@ -1,10 +1,9 @@
 package gg.amy.autumn.di;
 
-import gg.amy.autumn.di.annotation.Component;
-import gg.amy.autumn.di.annotation.Depends;
-import gg.amy.autumn.di.annotation.Inject;
-import gg.amy.autumn.di.annotation.Singleton;
+import gg.amy.autumn.di.annotation.*;
 import org.junit.jupiter.api.Test;
+
+import javax.annotation.Nonnull;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -38,6 +37,14 @@ public class AutumnDITest {
         assertNotNull(target.component.component);
     }
 
+    @Test
+    public void testThatCreatorMethodsWork() {
+        final var di = new AutumnDI(getClass()).loadComponents().initSingletons().finish();
+        final var target = new TestCreatorTarget();
+        di.injectComponents(target);
+        assertNotNull(target.component);
+    }
+
     @SuppressWarnings("unused")
     public static class TestTarget {
         @Inject
@@ -56,6 +63,12 @@ public class AutumnDITest {
         private TestSingletonWithDeps component;
     }
 
+    @SuppressWarnings("unused")
+    public static class TestCreatorTarget {
+        @Inject
+        private TestCreatorMethod component;
+    }
+
     @Component
     public static class TestComponent {
     }
@@ -71,5 +84,12 @@ public class AutumnDITest {
     public static class TestSingletonWithDeps {
         @Inject
         private TestSingleton component;
+    }
+
+    public static class TestCreatorMethod {
+        @Creator
+        public static TestCreatorMethod supply(@Nonnull final Class<?> cls) {
+            return new TestCreatorMethod();
+        }
     }
 }
