@@ -8,6 +8,8 @@ import org.immutables.value.Value.Immutable;
  */
 @Immutable
 public interface Request {
+    String id();
+
     HttpMethod method();
 
     String path();

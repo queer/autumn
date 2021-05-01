@@ -19,7 +19,6 @@ public class HttpChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(@Nonnull final SocketChannel channel) {
-        // TODO: Only init this once
         final var handler = new HttpChannelInboundHandler();
         di.injectComponents(handler);
 

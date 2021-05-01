@@ -44,7 +44,7 @@ public final class AutumnApplication {
     }
 
     private void boot() {
-        LOGGER.info("Running @Run methods...");
+        LOGGER.info("Running all components...");
         DI.singletons().values().forEach(o -> {
             for(final var m : o.getClass().getDeclaredMethods()) {
                 if(m.isAnnotationPresent(Run.class)) {

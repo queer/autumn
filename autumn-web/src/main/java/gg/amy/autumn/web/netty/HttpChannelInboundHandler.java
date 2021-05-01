@@ -2,7 +2,10 @@ package gg.amy.autumn.web.netty;
 
 import gg.amy.autumn.di.annotation.Inject;
 import gg.amy.autumn.web.http.HttpMethod;
-import gg.amy.autumn.web.http.*;
+import gg.amy.autumn.web.http.ImmutableRequest;
+import gg.amy.autumn.web.http.Response;
+import gg.amy.autumn.web.http.Router;
+import gg.amy.autumn.web.util.ID;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
@@ -10,7 +13,7 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
@@ -27,15 +30,16 @@ class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(@Nonnull final ChannelHandlerContext ctx, @Nonnull final Object msg) throws Exception {
         if(msg instanceof final FullHttpRequest request) {
+            final var start = System.nanoTime();
             final var method = HttpMethod.fromNetty(request.method());
             final var path = request.uri();
-            logger.info("req: {} {}", method.name(), path);
-
             final var req = ImmutableRequest.builder()
+                    .id(ID.gen())
                     .method(method)
                     .path(path)
                     .body(request.content().array())
                     .build();
+            logger.info("{}: {} {}", req.id(), method.name(), path);
 
             final var maybeRoute = router.match(method, path);
             byte[] response;
@@ -43,7 +47,7 @@ class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
             if(maybeRoute.isPresent()) {
                 try {
                     final var route = maybeRoute.get();
-                    logger.trace("object = {}, req = {}", route.object(), req);
+                    logger.trace("{}: object = {}, req = {}", req.id(), route.object(), req);
                     final Response res = (Response) route.method().invoke(route.object(), req);
                     status = res.status();
                     response = res.body();
@@ -63,14 +67,10 @@ class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
                 response = "it's not here D:".getBytes(StandardCharsets.UTF_8);
             }
 
-            logger.info("res: {} {} -> {}", method.name(), path, status);
-
             final HttpMessage out = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.valueOf(status), copiedBuffer(response));
-
             if(HttpUtil.isKeepAlive(request)) {
                 out.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
             }
-
             // Helpful headers
             if(!out.headers().contains(HttpHeaderNames.CONTENT_TYPE)) {
                 out.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain");
@@ -80,6 +80,8 @@ class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
             }
 
             ctx.writeAndFlush(out);
+
+            logger.info("{}: status={} sentIn={}ms", req.id(), status, String.format("%.2f", (System.nanoTime() - start) / 1_000_000D));
         } else {
             super.channelRead(ctx, msg);
         }
