@@ -4,9 +4,11 @@
     <currentScheme>IDE</currentScheme>
   </component>
   <component name="EntryPointsManager">
-    <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="gg.amy.autumn.di.annotation.Creator" />
-      <item index="1" class="java.lang.String" itemvalue="gg.amy.autumn.application.annotation.Run" />
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="gg.amy.autumn.application.annotation.Run" />
+      <item index="1" class="java.lang.String" itemvalue="gg.amy.autumn.di.annotation.Creator" />
+      <item index="2" class="java.lang.String" itemvalue="gg.amy.autumn.di.annotation.Init" />
+      <item index="3" class="java.lang.String" itemvalue="gg.amy.autumn.web.annotation.Route" />
     </list>
     <writeAnnotations>
       <writeAnnotation name="gg.amy.autumn.di.annotation.Inject" />

@@ -19,6 +19,7 @@ import java.util.function.Function;
  * @author amy
  * @since 5/1/21.
  */
+@SuppressWarnings("unused")
 public final class AutumnDI {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Collection<Class<?>> components = new HashSet<>();
@@ -131,7 +132,17 @@ public final class AutumnDI {
             throw new IllegalStateException("Cannot init singletons when phase is not SCAN.");
         }
         phase = Phase.INJECT;
-        singletons.values().forEach(this::injectComponents);
+        singletons.values().forEach(s -> {
+            injectComponents(s);
+            Arrays.stream(s.getClass().getDeclaredMethods()).filter(m -> m.isAnnotationPresent(Init.class)).forEach(m -> {
+                m.setAccessible(true);
+                try {
+                    m.invoke(s);
+                } catch(@Nonnull final Throwable e) {
+                    logger.error("Couldn't call @Init method {}#{}:", s.getClass().getName(), m.getName(), e);
+                }
+            });
+        });
         return this;
     }
 

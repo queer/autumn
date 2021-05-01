@@ -45,6 +45,14 @@ public class AutumnDITest {
         assertNotNull(target.component);
     }
 
+    @Test
+    public void testThatInitMethodsAreCalled() {
+        final var di = new AutumnDI().loadComponents().initSingletons().finish();
+        final var target = new TestInitTarget();
+        di.injectComponents(target);
+        assertNotNull(target.component.value);
+    }
+
     @SuppressWarnings("unused")
     public static class TestTarget {
         @Inject
@@ -67,6 +75,12 @@ public class AutumnDITest {
     public static class TestCreatorTarget {
         @Inject
         private TestCreatorMethod component;
+    }
+
+    @SuppressWarnings("unused")
+    public static class TestInitTarget {
+        @Inject
+        private TestInitMethod component;
     }
 
     @Component
@@ -95,6 +109,17 @@ public class AutumnDITest {
         @Creator
         public static TestCreatorMethod supply(@Nonnull final Class<?> cls) {
             return new TestCreatorMethod();
+        }
+    }
+
+    @Component
+    @Singleton
+    public static class TestInitMethod {
+        private Object value;
+
+        @Init
+        public void init() {
+            value = new Object();
         }
     }
 }

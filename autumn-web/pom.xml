@@ -15,10 +15,18 @@
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
 
+        <autumn.application.version>0.0.1</autumn.application.version>
+
         <netty.version>4.1.63.Final</netty.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>gg.amy.autumn</groupId>
+            <artifactId>autumn-application</artifactId>
+            <version>${autumn.application.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
