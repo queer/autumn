@@ -1,10 +1,8 @@
 package gg.amy.autumn.web.netty;
 
 import gg.amy.autumn.di.annotation.Inject;
+import gg.amy.autumn.web.http.*;
 import gg.amy.autumn.web.http.HttpMethod;
-import gg.amy.autumn.web.http.ImmutableRequest;
-import gg.amy.autumn.web.http.Response;
-import gg.amy.autumn.web.http.Router;
 import gg.amy.autumn.web.util.ID;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -13,6 +11,7 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
@@ -32,11 +31,12 @@ class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
             final var start = System.nanoTime();
             final var method = HttpMethod.fromNetty(request.method());
             final var path = request.uri();
-            final var req = ImmutableRequest.builder()
+            var req = ImmutableRequest.builder()
                     .id(ID.gen())
                     .method(method)
                     .path(path)
                     .body(request.content().array())
+                    .params(Map.of())
                     .build();
             logger.info("{}: {} {}", req.id(), method.name(), path);
 
@@ -46,6 +46,8 @@ class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
             if(maybeRoute.isPresent()) {
                 try {
                     final var route = maybeRoute.get();
+                    final var params = RouteParser.parseOutParams(route, path);
+                    req = req.withParams(params);
                     logger.trace("{}: object = {}, req = {}", req.id(), route.object(), req);
                     final Response res = (Response) route.method().invoke(route.object(), req);
                     status = res.status();

@@ -17,3 +17,4 @@ An example application can be seen [here](https://github.com/queer/autumn/tree/m
 - Websockets
 - Anything databases, lol
 - HTTP/2 (dealing with SSL is a hairy problem)
+- Globbing routes

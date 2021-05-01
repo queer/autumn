@@ -5,6 +5,7 @@ import org.immutables.value.Value.Immutable;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * @author amy
@@ -23,6 +24,9 @@ public interface Request {
 
     @Nonnull
     byte[] body();
+
+    @Nonnull
+    Map<String, String> params();
 
     @Nonnull
     default String bodyString() {

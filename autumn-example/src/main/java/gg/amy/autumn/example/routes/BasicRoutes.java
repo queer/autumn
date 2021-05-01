@@ -16,4 +16,9 @@ public class BasicRoutes {
     public Response index(@Nonnull final Request req) {
         return Response.create().body("henlo world!");
     }
+
+    @Route(method = HttpMethod.GET, path = "/henlo/:name")
+    public Response henlo(@Nonnull final Request req) {
+        return Response.create().body("henlo " + req.params().get("name"));
+    }
 }
