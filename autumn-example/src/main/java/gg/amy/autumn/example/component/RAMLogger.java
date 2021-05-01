@@ -2,7 +2,7 @@ package gg.amy.autumn.example.component;
 
 import gg.amy.autumn.di.annotation.Component;
 import gg.amy.autumn.di.annotation.Inject;
-import gg.amy.autumn.di.annotation.Run;
+import gg.amy.autumn.application.annotation.Run;
 import gg.amy.autumn.di.annotation.Singleton;
 import org.slf4j.Logger;
 

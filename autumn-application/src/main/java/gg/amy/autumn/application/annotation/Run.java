@@ -1,4 +1,4 @@
-package gg.amy.autumn.di.annotation;
+package gg.amy.autumn.application.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

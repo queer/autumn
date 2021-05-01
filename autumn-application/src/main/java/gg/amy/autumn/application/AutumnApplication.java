@@ -3,14 +3,11 @@ package gg.amy.autumn.application;
 import gg.amy.autumn.di.AutumnDI;
 import gg.amy.autumn.di.annotation.Creator;
 import gg.amy.autumn.di.annotation.Inject;
-import gg.amy.autumn.di.annotation.Run;
+import gg.amy.autumn.application.annotation.Run;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * @author amy
