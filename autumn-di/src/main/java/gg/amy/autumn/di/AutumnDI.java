@@ -79,7 +79,7 @@ public final class AutumnDI {
                 logger.info("Loaded new singleton component: {}.", dep.getName());
             } catch(final InstantiationException | NoSuchMethodException | InvocationTargetException
                     | IllegalAccessException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
 
@@ -140,6 +140,7 @@ public final class AutumnDI {
                     m.invoke(s);
                 } catch(@Nonnull final Throwable e) {
                     logger.error("Couldn't call @Init method {}#{}:", s.getClass().getName(), m.getName(), e);
+                    throw new RuntimeException(e);
                 }
             });
         });

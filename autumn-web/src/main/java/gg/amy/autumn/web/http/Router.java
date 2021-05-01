@@ -6,12 +6,13 @@ import gg.amy.autumn.di.annotation.Init;
 import gg.amy.autumn.di.annotation.Inject;
 import gg.amy.autumn.di.annotation.Singleton;
 import gg.amy.autumn.web.annotation.Route;
+import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * @author amy
@@ -20,13 +21,17 @@ import java.util.Set;
 @Component
 @Singleton
 public class Router {
-    private Set<HttpRoute> routes = new HashSet<>();
+    private final Collection<HttpRoute> routes = new HashSet<>();
 
     @Inject
     private AutumnDI di;
 
+    @Inject
+    private Logger logger;
+
     @Init
     public void scanForRoutes() {
+        final var routeLookup = new HashSet<String>();
         di.graph().getClassesWithMethodAnnotation(Route.class.getName())
                 .getNames()
                 .stream()
@@ -40,6 +45,7 @@ public class Router {
                 .forEach(c -> {
                     try {
                         final var instance = c.getConstructor().newInstance();
+                        di.injectComponents(instance);
                         Arrays.stream(c.getDeclaredMethods())
                                 .filter(m -> m.isAnnotationPresent(Route.class))
                                 .forEach(m -> {
@@ -50,7 +56,15 @@ public class Router {
                                         ));
                                     }
                                     final var route = m.getDeclaredAnnotation(Route.class);
+                                    if(routeLookup.contains(route.path())) {
+                                        throw new IllegalArgumentException(String.format(
+                                                "%s#%s tried to register route '%s', but it already exists.",
+                                                c.getName(), m.getName(), route.path()
+                                        ));
+                                    }
                                     routes.add(RouteParser.compile(instance, m, route.method(), route.path()));
+                                    routeLookup.add(route.path());
+                                    logger.info("Loaded route {}#{}: {}", c.getName(), m.getName(), route.path());
                                 });
                     } catch(@Nonnull final Throwable e) {
                         throw new IllegalStateException(e);
