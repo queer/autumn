@@ -81,12 +81,17 @@ public class AutumnDITest {
     @Component
     @Singleton
     @Depends(TestSingleton.class)
+    @SuppressWarnings("unused")
     public static class TestSingletonWithDeps {
         @Inject
         private TestSingleton component;
     }
 
-    public static class TestCreatorMethod {
+    @SuppressWarnings("InstantiationOfUtilityClass")
+    public static final class TestCreatorMethod {
+        private TestCreatorMethod() {
+        }
+
         @Creator
         public static TestCreatorMethod supply(@Nonnull final Class<?> cls) {
             return new TestCreatorMethod();
