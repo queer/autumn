@@ -1,6 +1,7 @@
 package gg.amy.autumn.web.http;
 
 import javax.annotation.Nonnull;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,19 +11,25 @@ import java.util.Map;
  * @since 5/1/21.
  */
 public final class RouteParser {
+    private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+
     private RouteParser() {
     }
 
     @Nonnull
     public static HttpRoute compile(@Nonnull final Object o, @Nonnull final Method m,
                                     @Nonnull final HttpMethod httpMethod, @Nonnull final String route) {
-        return ImmutableHttpRoute.builder()
-                .object(o)
-                .method(m)
-                .httpMethod(httpMethod)
-                // Only the first / can be ignored, after that they mean something
-                .parts(parseRoute(route, !route.equals("/")))
-                .build();
+        try {
+            return ImmutableHttpRoute.builder()
+                    .object(o)
+                    .method(LOOKUP.unreflect(m))
+                    .httpMethod(httpMethod)
+                    // Only the first / can be ignored, after that they mean something
+                    .parts(parseRoute(route, !route.equals("/")))
+                    .build();
+        } catch(final IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public static Map<String, String> parseOutParams(@Nonnull final SimpleHttpRoute route, @Nonnull final String path) {

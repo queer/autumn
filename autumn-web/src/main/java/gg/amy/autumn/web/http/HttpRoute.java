@@ -2,8 +2,7 @@ package gg.amy.autumn.web.http;
 
 import org.immutables.value.Value.Immutable;
 
-import javax.annotation.Nonnull;
-import java.lang.reflect.Method;
+import java.lang.invoke.MethodHandle;
 
 /**
  * @author amy
@@ -13,5 +12,5 @@ import java.lang.reflect.Method;
 public interface HttpRoute extends SimpleHttpRoute {
     Object object();
 
-    Method method();
+    MethodHandle method();
 }
