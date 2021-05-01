@@ -4,9 +4,13 @@
     <currentScheme>IDE</currentScheme>
   </component>
   <component name="EntryPointsManager">
-    <list size="1">
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="gg.amy.autumn.di.annotation.Creator" />
+      <item index="1" class="java.lang.String" itemvalue="gg.amy.autumn.di.annotation.Run" />
     </list>
+    <writeAnnotations>
+      <writeAnnotation name="gg.amy.autumn.di.annotation.Inject" />
+    </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MarkdownProjectSettings" wasCopied="true">

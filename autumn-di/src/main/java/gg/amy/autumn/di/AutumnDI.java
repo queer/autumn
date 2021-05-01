@@ -24,16 +24,22 @@ public final class AutumnDI {
     private final Collection<Class<?>> components = new HashSet<>();
     private final Map<Class<?>, Object> singletons = new HashMap<>();
     private final Map<Class<?>, Function<Class<?>, Object>> creators = new HashMap<>();
-
     private final ScanResult graph;
 
-    public AutumnDI(@Nonnull final Class<?> base) {
-        final var pkg = base.getPackageName();
-        logger.info("Scanning `{}` for components...", pkg);
-        graph = new ClassGraph().enableAllInfo().acceptPackages(pkg).scan();
+    private Phase phase = Phase.BOOT;
+
+    public AutumnDI() {
+        logger.info("Scanning for components...");
+        graph = new ClassGraph().enableAllInfo().scan();
     }
 
     public AutumnDI loadComponents() {
+        if(phase != Phase.BOOT) {
+            throw new IllegalStateException("Cannot load components when phase is not BOOT.");
+        }
+        phase = Phase.SCAN;
+
+        // Load components
         final var singletonGraph = new DirectedGraph<Class<?>>();
         graph.getClassesWithAnnotation(Component.class.getName())
                 .getNames()
@@ -63,6 +69,20 @@ public final class AutumnDI {
                     }
                 });
 
+        // Init singletons in dependency ordering
+        final var deps = TopologicalSort.sort(singletonGraph);
+        Collections.reverse(deps);
+        for(final var dep : deps) {
+            try {
+                singletons.put(dep, dep.getDeclaredConstructor().newInstance());
+                logger.info("Loaded new singleton component: {}.", dep.getName());
+            } catch(final InstantiationException | NoSuchMethodException | InvocationTargetException
+                    | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Load creator methods
         graph.getClassesWithMethodAnnotation(Creator.class.getName())
                 .getNames()
                 .stream()
@@ -103,27 +123,23 @@ public final class AutumnDI {
                         }
                     }
                 });
-
-        final var deps = TopologicalSort.sort(singletonGraph);
-        Collections.reverse(deps);
-        for(final var dep : deps) {
-            try {
-                singletons.put(dep, dep.getDeclaredConstructor().newInstance());
-                logger.info("Loaded new singleton component: {}.", dep.getName());
-            } catch(final InstantiationException | NoSuchMethodException | InvocationTargetException
-                    | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
         return this;
     }
 
     public AutumnDI initSingletons() {
+        if(phase != Phase.SCAN) {
+            throw new IllegalStateException("Cannot init singletons when phase is not SCAN.");
+        }
+        phase = Phase.INJECT;
         singletons.values().forEach(this::injectComponents);
         return this;
     }
 
     public AutumnDI finish() {
+        if(phase != Phase.INJECT) {
+            throw new IllegalStateException("Cannot finish DI work when phase is not INJECT.");
+        }
+        phase = Phase.DONE;
         logger.info("Done.");
         graph.close();
         return this;
@@ -245,5 +261,25 @@ public final class AutumnDI {
 
         // Give up
         return Optional.empty();
+    }
+
+    @Nonnull
+    public ScanResult graph() {
+        if(phase == Phase.DONE) {
+            throw new IllegalStateException("Cannot access class graph when phase is DONE.");
+        }
+        return graph;
+    }
+
+    @Nonnull
+    public Map<Class<?>, Object> singletons() {
+        return singletons;
+    }
+
+    private enum Phase {
+        BOOT,
+        SCAN,
+        INJECT,
+        DONE,
     }
 }
