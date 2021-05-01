@@ -16,4 +16,4 @@ An example application can be seen [here](https://github.com/queer/autumn/tree/m
 - Multipart
 - Websockets
 - Anything databases, lol
-- HTTP/2
+- HTTP/2 (dealing with SSL is a hairy problem)

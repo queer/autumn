@@ -52,6 +52,7 @@ public final class AutumnApplication {
                         m.invoke(o);
                     } catch(@Nonnull final Throwable e) {
                         LOGGER.error("Encountered error with @Run method {}#{}:", o.getClass().getName(), m.getName(), e);
+                        throw new RuntimeException(e);
                     }
                 }
             }
