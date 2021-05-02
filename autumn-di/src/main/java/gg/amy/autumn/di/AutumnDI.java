@@ -27,24 +27,24 @@ public final class AutumnDI {
     private final Collection<Class<?>> components = new HashSet<>();
     private final Map<Class<?>, Object> singletons = new HashMap<>();
     private final Map<Class<?>, Function<Class<?>, Object>> creators = new HashMap<>();
-    private final ScanResult graph;
+    private ScanResult graph;
 
     private Phase phase = Phase.BOOT;
 
-    public AutumnDI() {
-        graph = new ClassGraph().enableAllInfo().scan();
+    public AutumnDI init(@Nonnull final Class<?> base) {
+        return loadComponents(base).initSingletons().finish();
     }
 
-    public AutumnDI init() {
-        return loadComponents().initSingletons().finish();
-    }
-
-    public AutumnDI loadComponents() {
-        logger.info("Scanning for components...");
+    public AutumnDI loadComponents(@Nonnull final Class<?> base) {
         if(phase != Phase.BOOT) {
             throw new IllegalStateException("Cannot load components when phase is not BOOT.");
         }
         phase = Phase.SCAN;
+        logger.info("Scanning for components...");
+        graph = new ClassGraph()
+                .enableAllInfo()
+                .acceptPackages("gg.amy.autumn", base.getPackageName())
+                .scan();
 
         // Load components
         final var singletonGraph = new DirectedGraph<Class<?>>();

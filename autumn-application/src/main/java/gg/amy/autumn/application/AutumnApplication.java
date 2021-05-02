@@ -50,7 +50,7 @@ public final class AutumnApplication {
         final var caller = stackWalker.walk(s -> s.skip(1).findFirst()).get().getDeclaringClass();
         LOGGER.info("Booting from: {}.", caller.getName());
 
-        DI.loadComponents().initSingletons().finish();
+        DI.init(caller);
     }
 
     public static void run() {

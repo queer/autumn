@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class AutumnDITest {
     @Test
     public void testThatComponentInjectionWorks() {
-        final var di = new AutumnDI().loadComponents().initSingletons().finish();
+        final var di = new AutumnDI().init(getClass());
         final var target = new TestTarget();
         di.injectComponents(target);
         assertNotNull(target.component);
@@ -22,7 +22,7 @@ public class AutumnDITest {
 
     @Test
     public void testThatSingletonComponentInjectionWorks() {
-        final var di = new AutumnDI().loadComponents().initSingletons().finish();
+        final var di = new AutumnDI().init(getClass());
         final var target = new TestSingletonTarget();
         di.injectComponents(target);
         assertNotNull(target.component);
@@ -30,7 +30,7 @@ public class AutumnDITest {
 
     @Test
     public void testThatSingletonComponentInjectionWithDependenciesWorks() {
-        final var di = new AutumnDI().loadComponents().initSingletons().finish();
+        final var di = new AutumnDI().init(getClass());
         final var target = new TestSingletonWithDepsTarget();
         di.injectComponents(target);
         assertNotNull(target.component);
@@ -39,7 +39,7 @@ public class AutumnDITest {
 
     @Test
     public void testThatCreatorMethodsWork() {
-        final var di = new AutumnDI().loadComponents().initSingletons().finish();
+        final var di = new AutumnDI().init(getClass());
         final var target = new TestCreatorTarget();
         di.injectComponents(target);
         assertNotNull(target.component);
@@ -47,7 +47,7 @@ public class AutumnDITest {
 
     @Test
     public void testThatInitMethodsAreCalled() {
-        final var di = new AutumnDI().loadComponents().initSingletons().finish();
+        final var di = new AutumnDI().init(getClass());
         final var target = new TestInitTarget();
         di.injectComponents(target);
         assertNotNull(target.component.value);
