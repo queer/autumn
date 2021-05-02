@@ -16,6 +16,7 @@
         <maven.compiler.target>16</maven.compiler.target>
 
         <autumn.application.version>0.0.1</autumn.application.version>
+        <autumn.json.version>0.0.1</autumn.json.version>
 
         <netty.version>4.1.63.Final</netty.version>
     </properties>
@@ -25,6 +26,12 @@
             <groupId>gg.amy.autumn</groupId>
             <artifactId>autumn-application</artifactId>
             <version>${autumn.application.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>gg.amy.autumn.json</groupId>
+            <artifactId>autumn-json</artifactId>
+            <version>${autumn.json.version}</version>
         </dependency>
 
         <dependency>
