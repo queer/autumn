@@ -14,11 +14,12 @@ An example application can be seen [here](https://github.com/queer/autumn/tree/m
 
 ## What does work
 
+- JVM boot to usable API in ~500ms
+- Fits into 32MB
 - Runtime DI + modularisation via components
 - Component dependencies
 - JSON
 - Web server
-- JVM boot to usable API in ~500ms
 
 ## What doesn't work
 
