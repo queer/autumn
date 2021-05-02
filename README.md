@@ -6,10 +6,11 @@ An example application can be seen [here](https://github.com/queer/autumn/tree/m
 
 ## Components
 
+- `autumn-example`: Example application.
 - `autumn-application`: Application bootstrap.
 - `autumn-di`: Dependency injection framework.
-- `autumn-web`: Web framework
-- `autumn-example`: Example application
+- `autumn-json`: JSON helper library.
+- `autumn-web`: Web framework.
 
 ## What doesn't work
 
