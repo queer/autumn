@@ -33,3 +33,55 @@ public class Readme {
     }
 }
 ```
+
+## Modularise with components
+
+```java
+@Component
+public class HelloComponent {
+    public String sayHello(String name) {
+        return "henlo " + name + "!";
+    }
+}
+
+public class Readme {
+    @Inject
+    private HelloComponent hello;
+
+    public static void main(String[] args) {
+        AutumnApplication.run();
+    }
+
+    @Route(method = HttpMethod.GET, path = "/hello/:name")
+    public Response hello(Request req) {
+        return Response.create().body(hello.sayHello(req.params().get("name")));
+    }
+}
+```
+
+## Singleton components for ex. databases
+
+```java
+
+@Component
+@Singleton
+public class SingletonComponent {
+    public String sayHello(String name) {
+        return "henlo " + name + "!";
+    }
+}
+
+public class Readme {
+    @Inject
+    private SingletonComponent singleton;
+
+    public static void main(String[] args) {
+        AutumnApplication.run();
+    }
+
+    @Route(method = HttpMethod.GET, path = "/hello/:name")
+    public Response hello(Request req) {
+        return Response.create().body(hello.sayHello(req.params().get("name")));
+    }
+}
+```
