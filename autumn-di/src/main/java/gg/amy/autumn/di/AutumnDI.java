@@ -35,7 +35,7 @@ public final class AutumnDI {
         return loadComponents(base).initSingletons().finish();
     }
 
-    public AutumnDI loadComponents(@Nonnull final Class<?> base) {
+    private AutumnDI loadComponents(@Nonnull final Class<?> base) {
         if(phase != Phase.BOOT) {
             throw new IllegalStateException("Cannot load components when phase is not BOOT.");
         }
@@ -133,7 +133,7 @@ public final class AutumnDI {
         return this;
     }
 
-    public AutumnDI initSingletons() {
+    private AutumnDI initSingletons() {
         if(phase != Phase.SCAN) {
             throw new IllegalStateException("Cannot init singletons when phase is not SCAN.");
         }
@@ -154,7 +154,7 @@ public final class AutumnDI {
         return this;
     }
 
-    public AutumnDI finish() {
+    private AutumnDI finish() {
         if(phase != Phase.INJECT) {
             throw new IllegalStateException("Cannot finish DI work when phase is not INJECT.");
         }
