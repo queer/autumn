@@ -105,7 +105,7 @@ public final class AutumnApplication {
         });
 
         final var startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
-        LOGGER.info("Booted Autumn application (start={}ms, boot={}ms, full={}ms).",
+        LOGGER.info("Booted Autumn application (start->boot={}ms, boot->now={}ms, start->now={}ms).",
                 bootTime - startTime, System.currentTimeMillis() - bootTime, System.currentTimeMillis() - startTime);
     }
 }
