@@ -23,7 +23,7 @@ public final class AutumnApplication {
     private AutumnApplication() {
     }
 
-    public static void run() {
+    public static void load() {
         LOGGER.info("Booting new Autumn application...");
 
         final var stackWalker = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
@@ -33,6 +33,10 @@ public final class AutumnApplication {
         LOGGER.info("Booting from: {}.", caller.getName());
 
         DI.loadComponents().initSingletons().finish();
+    }
+
+    public static void run() {
+        load();
         final var app = new AutumnApplication();
         DI.injectComponents(app);
         app.boot();

@@ -1,9 +1,7 @@
 package gg.amy.autumn.example.component;
 
 import gg.amy.autumn.di.annotation.Component;
-import gg.amy.autumn.di.annotation.Inject;
 import gg.amy.autumn.di.annotation.Singleton;
-import org.slf4j.Logger;
 
 import java.lang.management.ManagementFactory;
 

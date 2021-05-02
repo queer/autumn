@@ -34,6 +34,10 @@ public final class AutumnDI {
         graph = new ClassGraph().enableAllInfo().scan();
     }
 
+    public AutumnDI init() {
+        return loadComponents().initSingletons().finish();
+    }
+
     public AutumnDI loadComponents() {
         if(phase != Phase.BOOT) {
             throw new IllegalStateException("Cannot load components when phase is not BOOT.");
@@ -132,18 +136,19 @@ public final class AutumnDI {
             throw new IllegalStateException("Cannot init singletons when phase is not SCAN.");
         }
         phase = Phase.INJECT;
-        singletons.values().forEach(s -> {
-            injectComponents(s);
-            Arrays.stream(s.getClass().getDeclaredMethods()).filter(m -> m.isAnnotationPresent(Init.class)).forEach(m -> {
-                m.setAccessible(true);
-                try {
-                    m.invoke(s);
-                } catch(@Nonnull final Throwable e) {
-                    logger.error("Couldn't call @Init method {}#{}:", s.getClass().getName(), m.getName(), e);
-                    throw new RuntimeException(e);
-                }
-            });
-        });
+        // We do this as a two-phase pass to make sure we actually have everything
+        singletons.values().forEach(this::injectComponents);
+        singletons.values().forEach(s -> Arrays.stream(s.getClass().getDeclaredMethods())
+                .filter(m -> m.isAnnotationPresent(Init.class))
+                .forEach(m -> {
+                    m.setAccessible(true);
+                    try {
+                        m.invoke(s);
+                    } catch(@Nonnull final Throwable e) {
+                        logger.error("Couldn't call @Init method {}#{}:", s.getClass().getName(), m.getName(), e);
+                        throw new RuntimeException(e);
+                    }
+                }));
         return this;
     }
 
@@ -152,8 +157,8 @@ public final class AutumnDI {
             throw new IllegalStateException("Cannot finish DI work when phase is not INJECT.");
         }
         phase = Phase.DONE;
-        logger.info("Done.");
         graph.close();
+        logger.info("Done.");
         return this;
     }
 

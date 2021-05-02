@@ -1,8 +1,9 @@
 package gg.amy.autumn.web.netty;
 
 import gg.amy.autumn.di.annotation.Inject;
-import gg.amy.autumn.web.http.*;
 import gg.amy.autumn.web.http.HttpMethod;
+import gg.amy.autumn.web.http.ImmutableRequest;
+import gg.amy.autumn.web.http.Router;
 import gg.amy.autumn.web.util.ID;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -10,7 +11,6 @@ import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
@@ -31,7 +31,7 @@ class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
             final var start = System.nanoTime();
             final var method = HttpMethod.fromNetty(request.method());
             final var path = request.uri();
-            var req = ImmutableRequest.builder()
+            final var req = ImmutableRequest.builder()
                     .id(ID.gen())
                     .method(method)
                     .path(path)
@@ -40,33 +40,9 @@ class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
                     .build();
             logger.info("{}: {} {}", req.id(), method.name(), path);
 
-            final var maybeRoute = router.match(method, path);
-            byte[] response;
-            int status;
-            if(maybeRoute.isPresent()) {
-                try {
-                    final var route = maybeRoute.get();
-                    final var params = RouteParser.parseOutParams(route, path);
-                    req = req.withParams(params);
-                    logger.trace("{}: object = {}, req = {}", req.id(), route.object(), req);
-                    final Response res = (Response) route.method().invoke(route.object(), req);
-                    status = res.status();
-                    response = res.body();
-                } catch(final Throwable e) {
-                    logger.error("error handling request! ;-;", e);
-                    final String message;
-                    if(e.getMessage() == null) {
-                        message = "<no message>";
-                    } else {
-                        message = e.getMessage();
-                    }
-                    response = message.getBytes(StandardCharsets.UTF_8);
-                    status = 500;
-                }
-            } else {
-                status = 404;
-                response = "it's not here D:".getBytes(StandardCharsets.UTF_8);
-            }
+            final var res = router.runRequest(req);
+            final var response = res.body();
+            final var status = res.status();
 
             final HttpMessage out = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.valueOf(status), copiedBuffer(response));
             if(HttpUtil.isKeepAlive(request)) {

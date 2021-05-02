@@ -72,7 +72,31 @@ public class Router {
                 });
     }
 
-    public Optional<HttpRoute> match(@Nonnull final HttpMethod method, @Nonnull final String path) {
+    public Response runRequest(@Nonnull Request req) {
+        final var maybeRoute = match(req.method(), req.path());
+        if(maybeRoute.isPresent()) {
+            try {
+                final var route = maybeRoute.get();
+                final var params = RouteParser.parseOutParams(route, req.path());
+                req = ImmutableRequest.copyOf(req).withParams(params);
+                logger.trace("{}: object = {}, req = {}", req.id(), route.object(), req);
+                return (Response) route.method().invoke(route.object(), req);
+            } catch(final Throwable e) {
+                logger.error("error handling request! ;-;", e);
+                final String message;
+                if(e.getMessage() == null) {
+                    message = "<no message>";
+                } else {
+                    message = e.getMessage();
+                }
+                return Response.create().status(500).body(message);
+            }
+        } else {
+            return Response.create().status(404).body("it's not here D:");
+        }
+    }
+
+    private Optional<HttpRoute> match(@Nonnull final HttpMethod method, @Nonnull final String path) {
         final var parsedPath = RouteParser.parseRoute(path, false);
         return routes.stream().filter(r -> r.httpMethod() == method && r.matches(parsedPath)).findFirst();
     }
