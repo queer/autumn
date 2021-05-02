@@ -32,7 +32,6 @@ public final class AutumnDI {
     private Phase phase = Phase.BOOT;
 
     public AutumnDI() {
-        logger.info("Scanning for components...");
         graph = new ClassGraph().enableAllInfo().scan();
     }
 
@@ -41,6 +40,7 @@ public final class AutumnDI {
     }
 
     public AutumnDI loadComponents() {
+        logger.info("Scanning for components...");
         if(phase != Phase.BOOT) {
             throw new IllegalStateException("Cannot load components when phase is not BOOT.");
         }

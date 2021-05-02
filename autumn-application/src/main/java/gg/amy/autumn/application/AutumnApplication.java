@@ -7,6 +7,7 @@ import gg.amy.autumn.di.annotation.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.lang.StackWalker.Option;
 import java.lang.management.ManagementFactory;
@@ -15,9 +16,9 @@ import java.lang.management.ManagementFactory;
  * The entrypoint of an Autumn application. Autumn applications have two phases
  * to them:
  * <ol>
- *     <li>Loading phase, via {@link #load()}. This phase loads all components,
+ *     <li>Loading phase, via {@link #bootstrap()}. This phase loads all components,
  *     invokes {@link Init} methods, and does other related tasks.</li>
- *     <li>Running phase. {@link #run()} will first call {@link #load()} and
+ *     <li>Running phase. {@link #run()} will first call {@link #bootstrap()} and
  *     then will actually boot the application. The boot process is really just
  *     calling all the {@link Run} methods.</li>
  * </ol>
@@ -30,18 +31,18 @@ public final class AutumnApplication {
     // bleh
     @SuppressWarnings("StaticVariableOfConcreteClass")
     private static final AutumnDI DI = new AutumnDI();
-    private static boolean LOADED;
+    private static boolean BOOTSTRAPPED;
     private static boolean RUNNING;
 
     private AutumnApplication() {
     }
 
-    public static void load() {
-        if(LOADED) {
+    public static void bootstrap() {
+        if(BOOTSTRAPPED) {
             return;
         }
-        LOADED = true;
-        LOGGER.info("Booting new Autumn application...");
+        BOOTSTRAPPED = true;
+        LOGGER.info("Bootstrapping new Autumn application...");
 
         final var stackWalker = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
         // Safe
@@ -56,11 +57,12 @@ public final class AutumnApplication {
         if(RUNNING) {
             return;
         }
+        final var bootTime = System.currentTimeMillis();
         RUNNING = true;
-        load();
+        bootstrap();
         final var app = new AutumnApplication();
         DI.injectComponents(app);
-        app.boot();
+        app.boot(bootTime);
     }
 
     @Creator
@@ -68,7 +70,7 @@ public final class AutumnApplication {
         return DI;
     }
 
-    private void boot() {
+    private void boot(@Nonnegative final long bootTime) {
         LOGGER.info("Running all components...");
         DI.singletons().values().forEach(o -> {
             for(final var m : o.getClass().getDeclaredMethods()) {
@@ -84,6 +86,7 @@ public final class AutumnApplication {
         });
 
         final var startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
-        LOGGER.info("Booted Autumn application (delta={}ms).", System.currentTimeMillis() - startTime);
+        LOGGER.info("Booted Autumn application (start={}ms, boot={}ms, full={}ms).",
+                bootTime - startTime, System.currentTimeMillis() - bootTime, System.currentTimeMillis() - startTime);
     }
 }

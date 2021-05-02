@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class BasicRoutesTest {
     static {
-        AutumnApplication.load();
+        AutumnApplication.bootstrap();
     }
 
     @Test
