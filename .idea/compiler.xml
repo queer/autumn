@@ -11,6 +11,12 @@
         <module name="autumn-web" />
         <module name="autumn-example" />
       </profile>
+      <profile name="Annotation profile for Unknown" enabled="true">
+        <sourceOutputDir name="../../target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="wrapper" />
+      </profile>
     </annotationProcessing>
   </component>
 </project>

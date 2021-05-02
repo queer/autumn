@@ -37,6 +37,10 @@ public final class AutumnApplication {
     private AutumnApplication() {
     }
 
+    /**
+     * Bootstrap the Autumn application. Scans the classpath and runs all
+     * DI-related hooks. Does <strong>not</strong> run any {@link Run} methods.
+     */
     public static void bootstrap() {
         if(BOOTSTRAPPED) {
             return;
@@ -53,10 +57,25 @@ public final class AutumnApplication {
         DI.init(caller);
     }
 
+    /**
+     * Run the Autumn application. Calls {@link #bootstrap()} and then runs any
+     * {@link Run} methods.
+     */
     public static void run() {
         if(RUNNING) {
             return;
         }
+        LOGGER.info("""
+                                
+                ▶  echo "🍁 Autumn" | figlet
+                  /\\/\\      _         _                        \s
+                  >  <     / \\  _   _| |_ _   _ _ __ ___  _ __ \s
+                 _\\/\\ |   / _ \\| | | | __| | | | '_ ` _ \\| '_ \\\s
+                / __` |  / ___ \\ |_| | |_| |_| | | | | | | | | |
+                \\____/  /_/   \\_\\__,_|\\__|\\__,_|_| |_| |_|_| |_|
+                Autumn Application v{}
+                Autumn DI v{}
+                """.stripTrailing(), AutumnMeta.VERSION, AutumnMeta.DI_VERSION);
         final var bootTime = System.currentTimeMillis();
         RUNNING = true;
         bootstrap();
