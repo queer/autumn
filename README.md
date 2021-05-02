@@ -92,7 +92,7 @@ public class Readme {
 
     @Route(method = HttpMethod.GET, path = "/hello/:name")
     public Response hello(Request req) {
-        return Response.create().body(hello.sayHello(req.params().get("name")));
+        return Response.create().body(singleton.sayHello(req.params().get("name")));
     }
 }
 ```
