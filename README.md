@@ -1,4 +1,4 @@
-# autumn
+![autumn](./autumn.png)
 
 Experimental Netty-based application/web framework.
 
