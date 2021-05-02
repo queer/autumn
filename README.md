@@ -12,6 +12,14 @@ An example application can be seen [here](https://github.com/queer/autumn/tree/m
 - `autumn-json`: JSON helper library.
 - `autumn-web`: Web framework.
 
+## What does work
+
+- Runtime DI + modularisation via components
+- Component dependencies
+- JSON
+- Web server
+- JVM boot to usable API in ~500ms
+
 ## What doesn't work
 
 - Multipart

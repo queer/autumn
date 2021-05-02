@@ -8,15 +8,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="autumn-di" />
         <module name="autumn-application" />
+        <module name="autumn-json" />
         <module name="autumn-web" />
         <module name="autumn-example" />
       </profile>
-      <profile name="Annotation profile for Unknown" enabled="true">
-        <sourceOutputDir name="../../target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../../target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="wrapper" />
-      </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="wrapper" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
