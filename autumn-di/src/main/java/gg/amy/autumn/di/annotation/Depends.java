@@ -6,8 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Singleton components that a singleton component depends on. Annotating a
- * non-singleton component with this is an error.
+ * <p>Singleton components that a singleton component depends on. Annotating a
+ * non-singleton component with this is an error.</p>
+ * <p><strong>WARNING: DEPENDENCY LOOPS ARE NOT CURRENTLY DETECTED.</strong></p>
  *
  * @author amy
  * @since 5/1/21.

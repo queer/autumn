@@ -15,6 +15,9 @@ import java.util.HashSet;
 import java.util.Optional;
 
 /**
+ * The HTTP router component. Holds information about routes, and can route
+ * individual {@link Request}s to the relevant handlers.
+ *
  * @author amy
  * @since 5/1/21.
  */

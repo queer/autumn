@@ -3,6 +3,11 @@ package gg.amy.autumn.web.http;
 import javax.annotation.Nonnull;
 
 /**
+ * A basic HTTP route. A route is made of two components, its method and its
+ * parts. The parts of a route are the {@code /}-delimited sections, split into
+ * an ordered array. Routes support matching, ie. testing a parts array against
+ * its own parts to test for a match, including path params.
+ *
  * @author amy
  * @since 5/1/21.
  */

@@ -1,9 +1,10 @@
 package gg.amy.autumn.web.http;
 
 import javax.annotation.Nonnull;
-import java.util.Locale;
 
 /**
+ * HTTP method enum.
+ *
  * @author amy
  * @since 5/1/21.
  */

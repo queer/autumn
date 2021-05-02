@@ -3,6 +3,7 @@ package gg.amy.autumn.application;
 import gg.amy.autumn.application.annotation.Run;
 import gg.amy.autumn.di.AutumnDI;
 import gg.amy.autumn.di.annotation.Creator;
+import gg.amy.autumn.di.annotation.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,16 @@ import java.lang.StackWalker.Option;
 import java.lang.management.ManagementFactory;
 
 /**
+ * The entrypoint of an Autumn application. Autumn applications have two phases
+ * to them:
+ * <ol>
+ *     <li>Loading phase, via {@link #load()}. This phase loads all components,
+ *     invokes {@link Init} methods, and does other related tasks.</li>
+ *     <li>Running phase. {@link #run()} will first call {@link #load()} and
+ *     then will actually boot the application. The boot process is really just
+ *     calling all the {@link Run} methods.</li>
+ * </ol>
+ *
  * @author amy
  * @since 5/1/21.
  */
@@ -19,11 +30,17 @@ public final class AutumnApplication {
     // bleh
     @SuppressWarnings("StaticVariableOfConcreteClass")
     private static final AutumnDI DI = new AutumnDI();
+    private static boolean LOADED;
+    private static boolean RUNNING;
 
     private AutumnApplication() {
     }
 
     public static void load() {
+        if(LOADED) {
+            return;
+        }
+        LOADED = true;
         LOGGER.info("Booting new Autumn application...");
 
         final var stackWalker = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
@@ -36,6 +53,10 @@ public final class AutumnApplication {
     }
 
     public static void run() {
+        if(RUNNING) {
+            return;
+        }
+        RUNNING = true;
         load();
         final var app = new AutumnApplication();
         DI.injectComponents(app);

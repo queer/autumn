@@ -25,6 +25,7 @@ public final class RouteParser {
                     .method(LOOKUP.unreflect(m))
                     .httpMethod(httpMethod)
                     // Only the first / can be ignored, after that they mean something
+                    // ie. ignore index path
                     .parts(parseRoute(route, !route.equals("/")))
                     .build();
         } catch(final IllegalAccessException e) {

@@ -16,6 +16,8 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
+ * Dependency injection for Autumn.
+ *
  * @author amy
  * @since 5/1/21.
  */
