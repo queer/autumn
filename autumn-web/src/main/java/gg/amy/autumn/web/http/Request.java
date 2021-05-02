@@ -17,6 +17,20 @@ import java.util.Map;
  */
 @Immutable
 public interface Request {
+    @Nonnull
+    static Request create(@Nonnull final HttpMethod method, @Nonnull final String path, @Nonnull final String body) {
+        return create(method, path, body.getBytes(StandardCharsets.UTF_8));
+    }
+
+    static Request create(@Nonnull final HttpMethod method, @Nonnull final String path, @Nonnull final byte[] body) {
+        return ImmutableRequest.builder()
+                .id(ID.gen())
+                .method(method)
+                .path(path)
+                .body(body)
+                .build();
+    }
+
     /**
      * @return The <a href="https://github.com/segmentio/ksuid">K-sortable</a>
      * ID of this request.
@@ -58,18 +72,4 @@ public interface Request {
      */
     @Nonnull
     Map<String, String> params();
-
-    @Nonnull
-    static Request create(@Nonnull final HttpMethod method, @Nonnull final String path, @Nonnull final String body) {
-        return create(method, path, body.getBytes(StandardCharsets.UTF_8));
-    }
-
-    static Request create(@Nonnull final HttpMethod method, @Nonnull final String path, @Nonnull final byte[] body) {
-        return ImmutableRequest.builder()
-                .id(ID.gen())
-                .method(method)
-                .path(path)
-                .body(body)
-                .build();
-    }
 }

@@ -13,21 +13,11 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollChannelOption;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http2.Http2SecurityUtil;
-import io.netty.handler.ssl.*;
-import io.netty.handler.ssl.ApplicationProtocolConfig.Protocol;
-import io.netty.handler.ssl.ApplicationProtocolConfig.SelectedListenerFailureBehavior;
-import io.netty.handler.ssl.ApplicationProtocolConfig.SelectorFailureBehavior;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
-
-import javax.net.ssl.SSLException;
-import java.security.cert.CertificateException;
 
 /**
  * @author amy

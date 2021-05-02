@@ -4,7 +4,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -61,8 +60,8 @@ public final class ID {
 
     private static byte[] intToBytes(int l) {
         final var result = new byte[4];
-        for (int i = 3; i >= 0; i--) {
-            result[i] = (byte)(l & 0xFF);
+        for(int i = 3; i >= 0; i--) {
+            result[i] = (byte) (l & 0xFF);
             l >>= 4;
         }
         return result;

@@ -37,6 +37,7 @@ public class Readme {
 ## Modularise with components
 
 ```java
+
 @Component
 public class HelloComponent {
     public String sayHello(String name) {
