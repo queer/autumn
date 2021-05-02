@@ -14,16 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author amy
  * @since 5/1/21.
  */
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class BasicRoutesTest {
     static {
         AutumnApplication.load();
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
-    private final Router router = AutumnApplication.createDI(getClass()).getComponent(getClass(), Router.class).get();
-
     @Test
     public void testIndex() {
+        final var router = AutumnApplication.createDI(getClass()).getComponent(getClass(), Router.class).get();
         final var response = router.runRequest(Request.create(HttpMethod.GET, "/", new byte[0]));
         assertEquals(200, response.status());
         assertEquals("henlo world!", new String(response.body(), StandardCharsets.UTF_8));
@@ -31,6 +30,7 @@ public class BasicRoutesTest {
 
     @Test
     public void testHenlo() {
+        final var router = AutumnApplication.createDI(getClass()).getComponent(getClass(), Router.class).get();
         final var response = router.runRequest(Request.create(HttpMethod.GET, "/henlo/person", new byte[0]));
         assertEquals(200, response.status());
         assertEquals("henlo person!", new String(response.body(), StandardCharsets.UTF_8));
