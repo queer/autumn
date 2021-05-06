@@ -1,6 +1,8 @@
 package gg.amy.autumn.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -81,6 +83,12 @@ public final class JsonObject {
 
     Map<String, Object> __delegate() {
         return delegate;
+    }
+
+    @Nonnull
+    public static JsonObject from(@Nonnull final Object obj) {
+        // TODO: More performant implementation
+        return new JsonObject(Json.objectToString(obj));
     }
 
     @Override

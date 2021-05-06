@@ -17,6 +17,14 @@ public final class Json {
     private Json() {
     }
 
+    public static String objectToString(@Nonnull final Object data) {
+        try {
+            return MAPPER.writeValueAsString(data);
+        } catch(final JsonProcessingException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static Map<String, Object> stringToObject(@Nonnull final String data) {
         try {
