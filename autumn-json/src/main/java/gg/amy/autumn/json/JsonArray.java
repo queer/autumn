@@ -105,7 +105,7 @@ public final class JsonArray {
         }
     }
 
-    public List<Object> __delegate() {
+    List<Object> __delegate() {
         return delegate;
     }
 

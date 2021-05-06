@@ -79,7 +79,7 @@ public final class JsonObject {
         }
     }
 
-    public Map<String, Object> __delegate() {
+    Map<String, Object> __delegate() {
         return delegate;
     }
 

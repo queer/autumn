@@ -59,6 +59,12 @@ public class Router {
                                         ));
                                     }
                                     final var route = m.getDeclaredAnnotation(Route.class);
+                                    if(!route.path().startsWith("/")) {
+                                        throw new IllegalArgumentException(String.format(
+                                                "Route '%s' must start with `/` (registered by %s#%s)",
+                                                route.path(), c.getName(), m.getName()
+                                        ));
+                                    }
                                     if(routeLookup.contains(route.path())) {
                                         throw new IllegalArgumentException(String.format(
                                                 "%s#%s tried to register route '%s', but it already exists.",
