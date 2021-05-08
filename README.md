@@ -8,7 +8,9 @@ An example application can be seen [here](https://github.com/queer/autumn/tree/m
 
 - `autumn-example`: Example application.
 - `autumn-application`: Application bootstrap.
+- `autumn-config`: [HJSON](https://hjson.github.io/)-based configuration.
 - `autumn-di`: Dependency injection framework.
+- `autumn-data`: Database access layer.
 - `autumn-json`: JSON helper library.
 - `autumn-web`: Web framework.
 
@@ -20,7 +22,7 @@ An example application can be seen [here](https://github.com/queer/autumn/tree/m
 - Component dependencies
 - JSON
 - Web server
-- [HJSON](https://hjson.github.io/) based autoconfig
+- [HJSON](https://hjson.github.io/)-based autoconfig
 
 ## What doesn't work
 

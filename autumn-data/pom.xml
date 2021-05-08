@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>autumn</artifactId>
+        <groupId>gg.amy.autumn</groupId>
+        <version>0.0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>autumn-data</artifactId>
+
+    <properties>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+
+        <autumn.application.version>0.0.1</autumn.application.version>
+        <autumn.json.version>0.0.1</autumn.json.version>
+
+        <hikari.version>4.0.3</hikari.version>
+        <postgres.version>42.2.20</postgres.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>gg.amy.autumn</groupId>
+            <artifactId>autumn-application</artifactId>
+            <version>${autumn.application.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>gg.amy.autumn.json</groupId>
+            <artifactId>autumn-json</artifactId>
+            <version>${autumn.json.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikari.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres.version}</version>
+        </dependency>
+    </dependencies>
+</project>

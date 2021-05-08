@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="autumn-di" />
-        <module name="autumn-application" />
         <module name="autumn-json" />
-        <module name="autumn-web" />
         <module name="autumn-example" />
+        <module name="autumn-di" />
+        <module name="autumn-data" />
+        <module name="autumn-application" />
+        <module name="autumn-web" />
         <module name="autumn-config" />
       </profile>
     </annotationProcessing>

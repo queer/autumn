@@ -12,6 +12,7 @@
     </list>
     <writeAnnotations>
       <writeAnnotation name="gg.amy.autumn.di.annotation.Inject" />
+      <writeAnnotation name="gg.amy.autumn.di.annotation.Config" />
     </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
