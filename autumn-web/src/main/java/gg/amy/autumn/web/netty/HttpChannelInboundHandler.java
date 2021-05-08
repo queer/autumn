@@ -33,7 +33,7 @@ class HttpChannelInboundHandler extends ChannelInboundHandlerAdapter {
                 final var method = HttpMethod.fromNetty(request.method());
                 final var path = request.uri();
                 final var body = request.content();
-                final var bytes = new byte[body.readableBytes() ];
+                final var bytes = new byte[body.readableBytes()];
                 body.readBytes(bytes);
                 final var req = ImmutableRequest.builder()
                         .id(ID.gen())

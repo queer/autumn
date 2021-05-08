@@ -244,7 +244,7 @@ public final class AutumnDI {
     }
 
     private void injectValueFromConfig(final Object object, final Field f, final Config annotation, final String path,
-                                            final Class<?> type, final ConfigFile config) {
+                                       final Class<?> type, final ConfigFile config) {
         final Object value;
         if(type.equals(Boolean.class) || type.equals(boolean.class)) {
             value = config.getBoolean(path);

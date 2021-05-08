@@ -1,6 +1,5 @@
 package gg.amy.autumn.web.http;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
