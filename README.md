@@ -4,6 +4,12 @@ Experimental Netty-based application/web framework.
 
 An example application can be seen [here](https://github.com/queer/autumn/tree/mistress/autumn-example).
 
+## Should I use this?
+
+Probably not! It's still incredibly early-stage -- everything's versioned at
+`0.0.1` for a reason, after all~ -- and so there's all sorts of instabilities,
+weirdness, etc. that you probably don't want to deal with.
+
 ## Components
 
 - `autumn-example`: Example application.
