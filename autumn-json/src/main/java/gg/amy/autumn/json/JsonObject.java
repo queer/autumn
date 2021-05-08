@@ -3,6 +3,7 @@ package gg.amy.autumn.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,38 +34,57 @@ public final class JsonObject {
         return new JsonObject(Json.objectToString(obj));
     }
 
+    @Nullable
     public Object get(@Nonnull final String key) {
         return delegate.get(key);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public byte getByte(@Nonnull final String key) {
         return (byte) get(key);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public short getShort(@Nonnull final String key) {
         return (short) get(key);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public int getInt(@Nonnull final String key) {
         return (int) get(key);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public long getLong(@Nonnull final String key) {
         return (long) get(key);
     }
 
+    @SuppressWarnings("ConstantConditions")
+    public float getFloat(@Nonnull final String key) {
+        return (float) get(key);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public double getDouble(@Nonnull final String key) {
+        return (double) get(key);
+    }
+
+    @SuppressWarnings("ConstantConditions")
     public boolean getBoolean(@Nonnull final String key) {
         return (boolean) get(key);
     }
 
+    @Nullable
     public String getString(@Nonnull final String key) {
         return (String) get(key);
     }
 
+    @Nullable
     public JsonObject getJsonObject(@Nonnull final String key) {
         return (JsonObject) get(key);
     }
 
+    @Nullable
     public JsonArray getJsonArray(@Nonnull final String key) {
         return (JsonArray) get(key);
     }

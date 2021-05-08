@@ -136,6 +136,16 @@ public final class ConfigFile {
     }
 
     @SuppressWarnings("ConstantConditions")
+    public float getFloat(@Nonnull final String key) {
+        return (float) get(key);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public double getDouble(@Nonnull final String key) {
+        return (double) get(key);
+    }
+
+    @SuppressWarnings("ConstantConditions")
     public boolean getBoolean(@Nonnull final String key) {
         return (boolean) get(key);
     }

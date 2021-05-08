@@ -1,5 +1,6 @@
 package gg.amy.autumn.di;
 
+import gg.amy.autumn.config.ConfigFile;
 import gg.amy.autumn.di.annotation.*;
 import gg.amy.autumn.di.util.DirectedGraph;
 import gg.amy.autumn.di.util.TopologicalSort;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -139,7 +141,10 @@ public final class AutumnDI {
         }
         phase = Phase.INJECT;
         // We do this as a two-phase pass to make sure we actually have everything
-        singletons.values().forEach(this::injectComponents);
+        singletons.values().forEach(s -> {
+            injectConfig(s);
+            injectComponents(s);
+        });
         singletons.values().forEach(s -> Arrays.stream(s.getClass().getDeclaredMethods())
                 .filter(m -> m.isAnnotationPresent(Init.class))
                 .forEach(m -> {
@@ -209,6 +214,63 @@ public final class AutumnDI {
         }
     }
 
+    public final void injectConfig(final Object object) {
+        for(final Field f : object.getClass().getDeclaredFields()) {
+            if(f.isAnnotationPresent(Config.class)) {
+                f.setAccessible(true);
+                final var annotation = f.getDeclaredAnnotation(Config.class);
+                final var file = annotation.file();
+                final var path = annotation.key();
+                final var type = f.getType();
+                final ConfigFile config = ConfigFile.readFile(file);
+                injectValueFromConfig(object, f, annotation, path, type, config);
+            }
+        }
+    }
+
+    public final void injectConfigFromFile(final Object object, final String file) {
+        for(final var f : object.getClass().getDeclaredFields()) {
+            if(f.isAnnotationPresent(Config.class)) {
+                f.setAccessible(true);
+                final var annotation = f.getDeclaredAnnotation(Config.class);
+                final var path = annotation.key();
+                final var type = f.getType();
+                final var config = ConfigFile.readFile(file);
+                injectValueFromConfig(object, f, annotation, path, type, config);
+            }
+        }
+    }
+
+    private void injectValueFromConfig(final Object object, final Field f, final Config annotation, final String path,
+                                            final Class<?> type, final ConfigFile config) {
+        final Object value;
+        if(type.equals(Boolean.class) || type.equals(boolean.class)) {
+            value = config.getBoolean(path);
+        } else if(type.equals(Double.class) || type.equals(double.class)) {
+            value = config.getDouble(path);
+        } else if(type.equals(Float.class) || type.equals(float.class)) {
+            value = (float) config.getDouble(path);
+        } else if(type.equals(Byte.class) || type.equals(byte.class)) {
+            value = (byte) config.getInt(path);
+        } else if(type.equals(Short.class) || type.equals(short.class)) {
+            value = (short) config.getInt(path);
+        } else if(type.equals(Integer.class) || type.equals(int.class)) {
+            value = config.getInt(path);
+        } else if(type.equals(Long.class) || type.equals(long.class)) {
+            value = config.getLong(path);
+        } else if(type.equals(String.class)) {
+            value = config.getString(path);
+        } else {
+            value = config.get(path);
+        }
+        f.setAccessible(true);
+        try {
+            f.set(object, value);
+        } catch(final IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     /**
      * @see #getComponent(Class, Class, Map)
      */
@@ -261,6 +323,7 @@ public final class AutumnDI {
             try {
                 final Object instance = comp.get().getDeclaredConstructor().newInstance();
                 injectComponents(instance, ctx);
+                injectConfig(instance);
                 return Optional.of((T) instance);
             } catch(final InstantiationException | NoSuchMethodException | InvocationTargetException
                     | IllegalAccessException e) {
@@ -270,12 +333,17 @@ public final class AutumnDI {
 
         // Search creator methods
         if(creators.containsKey(cls)) {
-            return Optional.of((T) creators.get(cls).apply(source));
+            final T created = (T) creators.get(cls).apply(source);
+            injectConfig(created);
+            injectComponents(created);
+            return Optional.of(created);
         }
         final var fuzzyCreatorMatch = creators.keySet().stream().filter(cls::isAssignableFrom).findFirst();
-        //noinspection OptionalIsPresent
         if(fuzzyCreatorMatch.isPresent()) {
-            return Optional.of((T) creators.get(fuzzyCreatorMatch.get()).apply(source));
+            final T created = (T) creators.get(fuzzyCreatorMatch.get()).apply(source);
+            injectConfig(created);
+            injectComponents(created);
+            return Optional.of(created);
         }
 
         // Give up

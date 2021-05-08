@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -48,6 +49,14 @@ public class AutumnDITest {
         final var target = new TestInitTarget();
         di.injectComponents(target);
         assertNotNull(target.component.value);
+    }
+
+    @Test
+    public void testThatConfigInjectionWorks() {
+        final var target = new TestConfigInjection();
+        di.injectConfig(target);
+        assertNotNull(target.value);
+        assertEquals("value", target.value);
     }
 
     @SuppressWarnings("unused")
@@ -118,5 +127,10 @@ public class AutumnDITest {
         public void init() {
             value = new Object();
         }
+    }
+
+    public static class TestConfigInjection {
+        @Config(file = "test-config.hjson", key = "key")
+        private String value;
     }
 }

@@ -15,10 +15,18 @@
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
 
+        <autumn.config.version>0.0.1</autumn.config.version>
+
         <classgraph.version>4.8.105</classgraph.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>gg.amy.autumn</groupId>
+            <artifactId>autumn-config</artifactId>
+            <version>${autumn.config.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>io.github.classgraph</groupId>
             <artifactId>classgraph</artifactId>
