@@ -55,8 +55,8 @@ public class AutumnDITest {
     public void testThatConfigInjectionWorks() {
         final var target = new TestConfigInjection();
         di.injectConfig(target);
-        assertNotNull(target.value);
         assertEquals("value", target.value);
+        assertEquals("test value", target.otherValue);
     }
 
     @SuppressWarnings("unused")
@@ -130,7 +130,10 @@ public class AutumnDITest {
     }
 
     public static class TestConfigInjection {
-        @Config(file = "test-config.hjson", key = "key")
+        @Config("key")
         private String value;
+
+        @Config(file = "test-config.hjson", value = "testKey")
+        private String otherValue;
     }
 }

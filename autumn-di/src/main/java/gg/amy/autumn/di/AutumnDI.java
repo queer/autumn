@@ -220,8 +220,9 @@ public final class AutumnDI {
                 f.setAccessible(true);
                 final var annotation = f.getDeclaredAnnotation(Config.class);
                 final var file = annotation.file();
-                final var path = annotation.key();
+                final var path = annotation.value();
                 final var type = f.getType();
+                // TODO: Cache configs
                 final ConfigFile config = ConfigFile.readFile(file);
                 injectValueFromConfig(object, f, annotation, path, type, config);
             }
@@ -233,8 +234,9 @@ public final class AutumnDI {
             if(f.isAnnotationPresent(Config.class)) {
                 f.setAccessible(true);
                 final var annotation = f.getDeclaredAnnotation(Config.class);
-                final var path = annotation.key();
+                final var path = annotation.value();
                 final var type = f.getType();
+                // TODO: Cache configs
                 final var config = ConfigFile.readFile(file);
                 injectValueFromConfig(object, f, annotation, path, type, config);
             }

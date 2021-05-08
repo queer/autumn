@@ -15,11 +15,12 @@ An example application can be seen [here](https://github.com/queer/autumn/tree/m
 ## What does work
 
 - JVM boot to usable API in ~500ms
-- Fits into 32MB
+- Runs with 32MB of heap RAM or less
 - Runtime DI + modularisation via components
 - Component dependencies
 - JSON
 - Web server
+- [HJSON](https://hjson.github.io/) based autoconfig
 
 ## What doesn't work
 
