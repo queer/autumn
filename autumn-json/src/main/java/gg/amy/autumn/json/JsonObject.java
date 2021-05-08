@@ -1,14 +1,14 @@
 package gg.amy.autumn.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A <strong>mutable</strong> JSON object.
+ *
  * @author amy
  * @since 5/2/21.
  */
@@ -27,7 +27,13 @@ public final class JsonObject {
         delegate.putAll(data);
     }
 
-    public Object get(final String key) {
+    @Nonnull
+    public static JsonObject from(@Nonnull final Object obj) {
+        // TODO: More performant implementation
+        return new JsonObject(Json.objectToString(obj));
+    }
+
+    public Object get(@Nonnull final String key) {
         return delegate.get(key);
     }
 
@@ -68,8 +74,13 @@ public final class JsonObject {
         return this;
     }
 
-    public JsonObject remove(final String key) {
+    public JsonObject remove(@Nonnull final String key) {
         delegate.remove(key);
+        return this;
+    }
+
+    public JsonObject merge(@Nonnull final JsonObject second) {
+        second.delegate.forEach(this::put);
         return this;
     }
 
@@ -83,12 +94,6 @@ public final class JsonObject {
 
     Map<String, Object> __delegate() {
         return delegate;
-    }
-
-    @Nonnull
-    public static JsonObject from(@Nonnull final Object obj) {
-        // TODO: More performant implementation
-        return new JsonObject(Json.objectToString(obj));
     }
 
     @Override

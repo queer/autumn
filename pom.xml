@@ -12,6 +12,7 @@
     <modules>
         <module>autumn-di</module>
         <module>autumn-json</module>
+        <module>autumn-config</module>
         <module>autumn-web</module>
         <module>autumn-application</module>
         <module>autumn-example</module>

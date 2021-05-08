@@ -11,6 +11,7 @@
         <module name="autumn-json" />
         <module name="autumn-web" />
         <module name="autumn-example" />
+        <module name="autumn-config" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

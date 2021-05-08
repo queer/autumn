@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * A <strong>mutable</strong> JSON array.
+ *
  * @author amy
  * @since 5/2/21.
  */
@@ -103,6 +105,11 @@ public final class JsonArray {
         } catch(final JsonProcessingException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public JsonArray merge(@Nonnull final JsonArray second) {
+        delegate.addAll(second.delegate);
+        return this;
     }
 
     List<Object> __delegate() {
