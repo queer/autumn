@@ -68,6 +68,7 @@ public final class AutumnApplication {
             return;
         }
 
+        LOGGER.info("Building up the season of Autumn~");
         LOGGER.info("I hope we have the coldest winter ever!");
         LOGGER.info("""
         

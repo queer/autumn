@@ -13,8 +13,8 @@
         <module>autumn-json</module>
         <module>autumn-config</module>
         <module>autumn-di</module>
-        <module>autumn-data</module>
         <module>autumn-application</module>
+        <module>autumn-data</module>
         <module>autumn-web</module>
         <module>autumn-example</module>
     </modules>
