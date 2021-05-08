@@ -1,5 +1,6 @@
 package gg.amy.autumn.application;
 
+import gg.amy.autumn.AutumnApplicationMeta;
 import gg.amy.autumn.application.annotation.Run;
 import gg.amy.autumn.di.AutumnDI;
 import gg.amy.autumn.di.annotation.Creator;
@@ -11,6 +12,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.lang.StackWalker.Option;
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 
 /**
  * The entrypoint of an Autumn application. Autumn applications have two phases
@@ -65,7 +67,26 @@ public final class AutumnApplication {
         if(RUNNING) {
             return;
         }
+
+        LOGGER.info("I hope we have the coldest winter ever!");
         LOGGER.info("""
+        
+        The leaves are falling,
+        the temperatures turning,
+        and we're falling deep into the cold~
+        """.stripTrailing());
+
+        final var versions = new ArrayList<String>();
+        versions.add(AutumnApplicationMeta.VERSION);
+        final var config = version("Config");
+        final var data = version("Data");
+        final var di = version("DI");
+        final var json = version("Json");
+        final var web = version("Web");
+
+        LOGGER.info("Saying 안녕 to all my friends~");
+
+        var base = """
                                 
                 ▶  echo "🍁 Autumn" | figlet
                   /\\/\\      _         _                        \s
@@ -74,8 +95,29 @@ public final class AutumnApplication {
                 / __` |  / ___ \\ |_| | |_| |_| | | | | | | | | |
                 \\____/  /_/   \\_\\__,_|\\__|\\__,_|_| |_| |_|_| |_|
                 Autumn Application v{}
-                Autumn DI v{}
-                """.stripTrailing(), AutumnMeta.VERSION, AutumnMeta.DI_VERSION);
+                """;
+        if(config != null) {
+            versions.add(config);
+            base += "Autumn Config v{}\n";
+        }
+        if(data != null) {
+            versions.add(data);
+            base += "Autumn Data v{}\n";
+        }
+        if(di != null) {
+            versions.add(di);
+            base += "Autumn DI v{}\n";
+        }
+        if(json != null) {
+            versions.add(json);
+            base += "Autumn JSON v{}\n";
+        }
+        if(web != null) {
+            versions.add(web);
+            base += "Autumn Web v{}\n";
+        }
+
+        LOGGER.info(base.stripTrailing(), versions.toArray());
         final var bootTime = System.currentTimeMillis();
         RUNNING = true;
         bootstrap();
@@ -107,5 +149,14 @@ public final class AutumnApplication {
         final var startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         LOGGER.info("Booted Autumn application (start->boot={}ms, boot->now={}ms, start->now={}ms).",
                 bootTime - startTime, System.currentTimeMillis() - bootTime, System.currentTimeMillis() - startTime);
+    }
+
+    private static String version(@Nonnull final String cls) {
+        try {
+            final Class<?> c = Class.forName("gg.amy.autumn.Autumn" + cls + "Meta");
+            return (String) c.getField("VERSION").get(null);
+        } catch(final Exception ignored) {
+            return null;
+        }
     }
 }
