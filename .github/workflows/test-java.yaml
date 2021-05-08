@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
       # Rewrite config file to use the correct host.
       # TODO: UGLY HACK
-      - run: sed -i 'localhost:5432' 'postgres:5432' s/autumn-data/src/test/resources/config.hjson
+      - run: sed -i 's/localhost:5432/postgres:5432/' s/autumn-data/src/test/resources/config.hjson
       - uses: actions/setup-java@v2
         with:
           distribution: "adopt"
