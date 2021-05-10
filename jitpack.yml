@@ -1,0 +1,2 @@
+before_install:
+  - ./ensure-java-16.sh
