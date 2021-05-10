@@ -68,14 +68,7 @@ public final class AutumnApplication {
             return;
         }
 
-        LOGGER.info("Building up the season of Autumn~");
         LOGGER.info("I hope we have the coldest winter ever!");
-        LOGGER.info("""
-        
-        The leaves are falling,
-        the temperatures turning,
-        and we're falling deep into the cold~
-        """.stripTrailing());
 
         final var versions = new ArrayList<String>();
         versions.add(AutumnApplicationMeta.VERSION);

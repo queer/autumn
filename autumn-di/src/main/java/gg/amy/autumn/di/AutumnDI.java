@@ -29,8 +29,8 @@ public final class AutumnDI {
     private final Collection<Class<?>> components = new HashSet<>();
     private final Map<Class<?>, Object> singletons = new HashMap<>();
     private final Map<Class<?>, Function<Class<?>, Object>> creators = new HashMap<>();
+    private final Map<String, ConfigFile> configCache = new HashMap<>();
     private ScanResult graph;
-
     private Phase phase = Phase.BOOT;
 
     public AutumnDI init(@Nonnull final Class<?> base) {
@@ -223,22 +223,20 @@ public final class AutumnDI {
                 final var file = annotation.file();
                 final var path = annotation.value();
                 final var type = f.getType();
-                // TODO: Cache configs
-                final ConfigFile config = ConfigFile.readFile(file);
+                final var config = configCache.computeIfAbsent(file, ConfigFile::readFile);
                 injectValueFromConfig(object, f, annotation, path, type, config);
             }
         }
     }
 
     public final void injectConfigFromFile(final Object object, final String file) {
+        final var config = configCache.computeIfAbsent(file, ConfigFile::readFile);
         for(final var f : object.getClass().getDeclaredFields()) {
             if(f.isAnnotationPresent(Config.class)) {
                 f.setAccessible(true);
                 final var annotation = f.getDeclaredAnnotation(Config.class);
                 final var path = annotation.value();
                 final var type = f.getType();
-                // TODO: Cache configs
-                final var config = ConfigFile.readFile(file);
                 injectValueFromConfig(object, f, annotation, path, type, config);
             }
         }
