@@ -34,7 +34,6 @@ weirdness, etc. that you probably don't want to deal with.
 
 - Multipart
 - Websockets
-- Anything databases, lol
 - HTTP/2 (dealing with SSL is a hairy problem)
 - Globbing routes
 
