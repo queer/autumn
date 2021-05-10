@@ -4,6 +4,7 @@ import gg.amy.autumn.config.annotation.PrimaryKey;
 import gg.amy.autumn.config.annotation.Table;
 import gg.amy.autumn.di.AutumnDI;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import javax.annotation.Nonnull;
 
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author amy
  * @since 5/8/21.
  */
+@DisabledIfSystemProperty(named = "enableDatabaseTests", matches = "false")
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class DatabaseTest {
     @Test
