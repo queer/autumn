@@ -149,4 +149,12 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub queer Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/queer/autumn</url>
+        </repository>
+    </distributionManagement>
 </project>
