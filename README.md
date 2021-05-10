@@ -29,6 +29,7 @@ weirdness, etc. that you probably don't want to deal with.
 - JSON
 - Web server
 - [HJSON](https://hjson.github.io/)-based autoconfig
+- Object-mapping database manipulation via PostgreSQL JSONB.
 
 ## What doesn't work
 
