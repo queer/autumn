@@ -11,6 +11,6 @@ public final class Example {
     }
 
     public static void main(final String[] args) {
-        AutumnApplication.run();
+        AutumnApplication.run(Example.class);
     }
 }
