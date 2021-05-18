@@ -18,7 +18,7 @@
         <autumn.application.version>0.0.2</autumn.application.version>
         <autumn.json.version>0.0.1</autumn.json.version>
 
-        <netty.version>4.1.63.Final</netty.version>
+        <netty.version>4.1.64.Final</netty.version>
     </properties>
 
     <dependencies>
