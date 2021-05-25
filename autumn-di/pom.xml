@@ -6,7 +6,7 @@
     <parent>
         <artifactId>autumn</artifactId>
         <groupId>gg.amy.autumn</groupId>
-        <version>0.0.3</version>
+        <version>0.0.4</version>
     </parent>
 
     <artifactId>autumn-di</artifactId>
@@ -15,8 +15,6 @@
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
 
-        <autumn.config.version>${project.version}</autumn.config.version>
-
         <classgraph.version>4.8.105</classgraph.version>
     </properties>
 
@@ -24,7 +22,7 @@
         <dependency>
             <groupId>gg.amy.autumn</groupId>
             <artifactId>autumn-config</artifactId>
-            <version>${autumn.config.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
