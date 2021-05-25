@@ -6,17 +6,16 @@
     <parent>
         <artifactId>autumn</artifactId>
         <groupId>gg.amy.autumn</groupId>
-        <version>0.0.1</version>
+        <version>0.0.3</version>
     </parent>
 
     <artifactId>autumn-application</artifactId>
-    <version>0.0.2</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
 
-        <autumn.di.version>0.0.1</autumn.di.version>
+        <autumn.di.version>${project.version}</autumn.di.version>
     </properties>
 
     <dependencies>

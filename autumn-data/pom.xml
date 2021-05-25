@@ -5,12 +5,11 @@
     <parent>
         <artifactId>autumn</artifactId>
         <groupId>gg.amy.autumn</groupId>
-        <version>0.0.1</version>
+        <version>0.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>autumn-data</artifactId>
-    <version>0.0.2</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
