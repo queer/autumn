@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -92,7 +93,13 @@ public final class JsonObject {
 
     @Nullable
     public JsonArray getJsonArray(@Nonnull final String key) {
-        return (JsonArray) get(key);
+        final var get = get(key);
+        if(get instanceof List) {
+            //noinspection unchecked
+            return new JsonArray((List<Object>) get);
+        } else {
+            return (JsonArray) get(key);
+        }
     }
 
     @Nonnull
