@@ -81,7 +81,13 @@ public final class JsonObject {
 
     @Nullable
     public JsonObject getJsonObject(@Nonnull final String key) {
-        return (JsonObject) get(key);
+        final var get = get(key);
+        if(get instanceof Map) {
+            // noinspection unchecked
+            return new JsonObject((Map<String, Object>) get);
+        } else {
+            return (JsonObject) get;
+        }
     }
 
     @Nullable
