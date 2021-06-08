@@ -28,5 +28,11 @@ public class JsonObjectTest {
         assertEquals("test", mapped.test);
     }
 
+    @Test
+    public void testThatNestingWorks() {
+        final var o = new JsonObject().put("test", new JsonObject().put("test", "test"));
+        assertEquals("{\"test\":{\"test\":\"test\"}}", o.toJson());
+    }
+
     private record TestObject(String test) {}
 }

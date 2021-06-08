@@ -99,11 +99,7 @@ public final class JsonArray implements Iterable<Object> {
     }
 
     public String toJson() {
-        try {
-            return Json.MAPPER.writeValueAsString(delegate);
-        } catch(final JsonProcessingException e) {
-            throw new IllegalStateException(e);
-        }
+        return Json.serialize(this);
     }
 
     public JsonArray merge(@Nonnull final JsonArray second) {

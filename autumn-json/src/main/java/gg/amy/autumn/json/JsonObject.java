@@ -121,11 +121,7 @@ public final class JsonObject {
     }
 
     public String toJson() {
-        try {
-            return Json.MAPPER.writeValueAsString(delegate);
-        } catch(final JsonProcessingException e) {
-            throw new IllegalStateException(e);
-        }
+        return Json.serialize(this);
     }
 
     @Nonnull
