@@ -4,10 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * A <strong>mutable</strong> JSON array.
@@ -15,7 +14,7 @@ import java.util.List;
  * @author amy
  * @since 5/2/21.
  */
-public final class JsonArray {
+public final class JsonArray implements Iterable<Object> {
     private final List<Object> delegate = new ArrayList<>();
 
     public JsonArray() {
@@ -128,5 +127,16 @@ public final class JsonArray {
     @Override
     public int hashCode() {
         return delegate.hashCode();
+    }
+
+    @Nonnull
+    @Override
+    public Iterator<Object> iterator() {
+        return delegate.iterator();
+    }
+
+    @Nonnull
+    public Stream<Object> stream() {
+        return delegate.stream();
     }
 }
