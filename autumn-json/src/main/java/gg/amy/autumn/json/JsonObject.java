@@ -89,16 +89,19 @@ public final class JsonObject {
         return (JsonArray) get(key);
     }
 
+    @Nonnull
     public JsonObject put(@Nonnull final String key, @Nonnull final Object value) {
         delegate.put(key, value);
         return this;
     }
 
+    @Nonnull
     public JsonObject remove(@Nonnull final String key) {
         delegate.remove(key);
         return this;
     }
 
+    @Nonnull
     public JsonObject merge(@Nonnull final JsonObject second) {
         second.delegate.forEach(this::put);
         return this;
@@ -107,6 +110,15 @@ public final class JsonObject {
     public String toJson() {
         try {
             return Json.MAPPER.writeValueAsString(delegate);
+        } catch(final JsonProcessingException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Nonnull
+    public <T> T into(@Nonnull final Class<T> cls) {
+        try {
+            return Json.MAPPER.readValue(toJson(), cls);
         } catch(final JsonProcessingException e) {
             throw new IllegalStateException(e);
         }

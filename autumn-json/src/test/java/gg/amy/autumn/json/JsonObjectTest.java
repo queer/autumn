@@ -20,4 +20,13 @@ public class JsonObjectTest {
         final var o = new JsonObject().put("test", 1);
         assertEquals(o, new JsonObject("{\"test\":1}"));
     }
+
+    @Test
+    public void testThatIntoWorks() {
+        final var o = new JsonObject().put("test", "test");
+        final var mapped = o.into(TestObject.class);
+        assertEquals("test", mapped.test);
+    }
+
+    private record TestObject(String test) {}
 }
