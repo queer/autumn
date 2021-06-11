@@ -17,7 +17,7 @@
 
 
         <hikari.version>4.0.3</hikari.version>
-        <postgres.version>42.2.20</postgres.version>
+        <postgres.version>42.2.21</postgres.version>
     </properties>
 
     <dependencies>
