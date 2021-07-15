@@ -16,7 +16,7 @@
         <maven.compiler.target>16</maven.compiler.target>
 
 
-        <hikari.version>4.0.3</hikari.version>
+        <hikari.version>5.0.0</hikari.version>
         <postgres.version>42.2.23</postgres.version>
     </properties>
 
