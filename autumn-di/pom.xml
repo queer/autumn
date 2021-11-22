@@ -15,7 +15,7 @@
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
 
-        <classgraph.version>4.8.133</classgraph.version>
+        <classgraph.version>4.8.134</classgraph.version>
     </properties>
 
     <dependencies>
