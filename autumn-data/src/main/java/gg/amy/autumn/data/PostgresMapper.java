@@ -49,6 +49,7 @@ public class PostgresMapper<T> {
 
         final String pkSqlType = typeToSqlType(pkField.getType());
         primaryKey = pkField.getDeclaredAnnotation(PrimaryKey.class);
+        pkField.setAccessible(true);
 
         database.sql(String.format("""
                 CREATE TABLE
@@ -64,7 +65,6 @@ public class PostgresMapper<T> {
     }
 
     public void save(final T entity) {
-        pkField.setAccessible(true);
         try {
             final Object pk = pkField.get(entity);
             // Map the object to JSON
