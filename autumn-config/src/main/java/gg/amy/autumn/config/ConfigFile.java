@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
  * @author amy
  * @since 5/8/21.
  */
+@SuppressWarnings("UseOfConcreteClass")
 public final class ConfigFile {
     private final JsonObject delegate;
 

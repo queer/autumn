@@ -2,10 +2,7 @@ package gg.amy.autumn.web;
 
 import gg.amy.autumn.application.annotation.Run;
 import gg.amy.autumn.di.AutumnDI;
-import gg.amy.autumn.di.annotation.Component;
-import gg.amy.autumn.di.annotation.Depends;
-import gg.amy.autumn.di.annotation.Inject;
-import gg.amy.autumn.di.annotation.Singleton;
+import gg.amy.autumn.di.annotation.*;
 import gg.amy.autumn.web.http.Router;
 import gg.amy.autumn.web.netty.HttpChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -31,6 +28,9 @@ public class HttpServer {
     private final EventLoopGroup masterGroup;
     private final EventLoopGroup slaveGroup;
     private ChannelFuture channelFuture;
+
+    @Config("autumn.web.port")
+    private int port = 8080;
 
     @Inject
     private AutumnDI di;
@@ -70,6 +70,6 @@ public class HttpServer {
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(initializer);
 
-        channelFuture = bootstrap.bind(8080).syncUninterruptibly();
+        channelFuture = bootstrap.bind(port).syncUninterruptibly();
     }
 }

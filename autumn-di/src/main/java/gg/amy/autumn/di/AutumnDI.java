@@ -23,7 +23,7 @@ import java.util.function.Function;
  * @author amy
  * @since 5/1/21.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "UseOfConcreteClass"})
 public final class AutumnDI {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Collection<Class<?>> components = new HashSet<>();
@@ -173,7 +173,7 @@ public final class AutumnDI {
     /**
      * @see #injectComponents(Object, Map)
      */
-    public final void injectComponents(final Object component) {
+    public void injectComponents(final Object component) {
         injectComponents(component, new HashMap<>());
     }
 
@@ -190,7 +190,7 @@ public final class AutumnDI {
      * @param ctx    The injection context.
      * @see #getComponent(Class, Class, Map)
      */
-    public final void injectComponents(final Object object, final Map<Class<?>, ?> ctx) {
+    public void injectComponents(final Object object, final Map<Class<?>, ?> ctx) {
         for(final var field : object.getClass().getDeclaredFields()) {
             try {
                 if(field.isAnnotationPresent(Inject.class)) {
@@ -215,7 +215,7 @@ public final class AutumnDI {
         }
     }
 
-    public final void injectConfig(final Object object) {
+    public void injectConfig(final Object object) {
         for(final Field f : object.getClass().getDeclaredFields()) {
             if(f.isAnnotationPresent(Config.class)) {
                 f.setAccessible(true);
@@ -229,7 +229,7 @@ public final class AutumnDI {
         }
     }
 
-    public final void injectConfigFromFile(final Object object, final String file) {
+    public void injectConfigFromFile(final Object object, final String file) {
         final var config = configCache.computeIfAbsent(file, ConfigFile::readFile);
         for(final var f : object.getClass().getDeclaredFields()) {
             if(f.isAnnotationPresent(Config.class)) {
@@ -242,6 +242,7 @@ public final class AutumnDI {
         }
     }
 
+    @SuppressWarnings("UseOfConcreteClass")
     private void injectValueFromConfig(final Object object, final Field f, final Config annotation, final String path,
                                        final Class<?> type, final ConfigFile config) {
         final Object value;
@@ -266,7 +267,14 @@ public final class AutumnDI {
         }
         f.setAccessible(true);
         try {
-            f.set(object, value);
+            if(value != null) {
+                f.set(object, value);
+            } else {
+                logger.warn(
+                        "{}#{} ({}) was set to null from config path {}, leaving default value instead.",
+                        object.getClass().getName(), f.getName(), type.getName(), path
+                );
+            }
         } catch(final IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
@@ -276,7 +284,7 @@ public final class AutumnDI {
      * @see #getComponent(Class, Class, Map)
      */
     @Nonnull
-    public final <T, E> Optional<T> getComponent(@Nonnull final Class<E> source, @Nonnull final Class<T> cls) {
+    public <T, E> Optional<T> getComponent(@Nonnull final Class<E> source, @Nonnull final Class<T> cls) {
         return getComponent(source, cls, new HashMap<>());
     }
 
@@ -292,8 +300,8 @@ public final class AutumnDI {
      */
     @Nonnull
     @SuppressWarnings({"unchecked", "DuplicatedCode"})
-    public final <T, E> Optional<T> getComponent(@Nonnull final Class<E> source, @Nonnull final Class<T> cls,
-                                                 @Nonnull final Map<Class<?>, ?> ctx) {
+    public <T, E> Optional<T> getComponent(@Nonnull final Class<E> source, @Nonnull final Class<T> cls,
+                                           @Nonnull final Map<Class<?>, ?> ctx) {
         // Search context
         if(ctx.containsKey(cls)) {
             return Optional.of((T) ctx.get(cls));

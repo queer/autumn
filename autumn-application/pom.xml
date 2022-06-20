@@ -6,7 +6,7 @@
     <parent>
         <artifactId>autumn</artifactId>
         <groupId>gg.amy.autumn</groupId>
-        <version>0.0.11</version>
+        <version>0.0.12</version>
     </parent>
 
     <artifactId>autumn-application</artifactId>
