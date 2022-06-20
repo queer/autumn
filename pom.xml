@@ -7,7 +7,7 @@
     <groupId>gg.amy.autumn</groupId>
     <artifactId>autumn</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.12</version>
+    <version>0.0.13</version>
 
     <modules>
         <module>autumn-json</module>

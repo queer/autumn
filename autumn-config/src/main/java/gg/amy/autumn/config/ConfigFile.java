@@ -107,6 +107,9 @@ public final class ConfigFile {
         Object target = delegate.get(parts[0]);
         final var iter = parts.length == 1 ? new String[0] : Arrays.copyOfRange(parts, 1, parts.length);
         for(@Nonnull final var part : iter) {
+            if(target == null) {
+                throw new NullPointerException("Key " + key + " not found");
+            }
             if(part.matches("\\d+")) {
                 target = ((List<Object>) target).get(Integer.parseInt(part));
             } else {

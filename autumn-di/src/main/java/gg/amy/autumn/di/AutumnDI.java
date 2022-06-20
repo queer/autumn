@@ -245,25 +245,29 @@ public final class AutumnDI {
     @SuppressWarnings("UseOfConcreteClass")
     private void injectValueFromConfig(final Object object, final Field f, final Config annotation, final String path,
                                        final Class<?> type, final ConfigFile config) {
-        final Object value;
-        if(type.equals(Boolean.class) || type.equals(boolean.class)) {
-            value = config.getBoolean(path);
-        } else if(type.equals(Double.class) || type.equals(double.class)) {
-            value = config.getDouble(path);
-        } else if(type.equals(Float.class) || type.equals(float.class)) {
-            value = (float) config.getDouble(path);
-        } else if(type.equals(Byte.class) || type.equals(byte.class)) {
-            value = (byte) config.getInt(path);
-        } else if(type.equals(Short.class) || type.equals(short.class)) {
-            value = (short) config.getInt(path);
-        } else if(type.equals(Integer.class) || type.equals(int.class)) {
-            value = config.getInt(path);
-        } else if(type.equals(Long.class) || type.equals(long.class)) {
-            value = config.getLong(path);
-        } else if(type.equals(String.class)) {
-            value = config.getString(path);
-        } else {
-            value = config.get(path);
+        Object value;
+        try {
+            if(type.equals(Boolean.class) || type.equals(boolean.class)) {
+                value = config.getBoolean(path);
+            } else if(type.equals(Double.class) || type.equals(double.class)) {
+                value = config.getDouble(path);
+            } else if(type.equals(Float.class) || type.equals(float.class)) {
+                value = (float) config.getDouble(path);
+            } else if(type.equals(Byte.class) || type.equals(byte.class)) {
+                value = (byte) config.getInt(path);
+            } else if(type.equals(Short.class) || type.equals(short.class)) {
+                value = (short) config.getInt(path);
+            } else if(type.equals(Integer.class) || type.equals(int.class)) {
+                value = config.getInt(path);
+            } else if(type.equals(Long.class) || type.equals(long.class)) {
+                value = config.getLong(path);
+            } else if(type.equals(String.class)) {
+                value = config.getString(path);
+            } else {
+                value = config.get(path);
+            }
+        } catch(final NullPointerException throwable) {
+            value = null;
         }
         f.setAccessible(true);
         try {
