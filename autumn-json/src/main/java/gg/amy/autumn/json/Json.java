@@ -14,6 +14,7 @@ import java.util.Map;
  * @author amy
  * @since 5/2/21.
  */
+@SuppressWarnings("UseOfConcreteClass")
 public final class Json {
     public static final ObjectMapper MAPPER = new ObjectMapper();
 

@@ -1,4 +1,4 @@
-package gg.amy.autumn.config.annotation;
+package gg.amy.autumn.data.annotation;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
  * @author amy
  * @since 5/8/21.
  */
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PrimaryKey {
+public @interface Table {
     @Nonnull
     String value();
 }

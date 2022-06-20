@@ -1,7 +1,7 @@
 package gg.amy.autumn.data;
 
-import gg.amy.autumn.config.annotation.PrimaryKey;
-import gg.amy.autumn.config.annotation.Table;
+import gg.amy.autumn.data.annotation.PrimaryKey;
+import gg.amy.autumn.data.annotation.Table;
 import gg.amy.autumn.di.AutumnDI;
 import org.junit.jupiter.api.Test;
 
