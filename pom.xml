@@ -26,7 +26,7 @@
         <maven.compiler.target>16</maven.compiler.target>
 
         <jsr305.version>3.0.2</jsr305.version>
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.0</slf4j.version>
         <immutables.version>2.9.1</immutables.version>
 
         <junit.version>5.9.0</junit.version>
