@@ -30,7 +30,7 @@
         <immutables.version>2.9.2</immutables.version>
 
         <junit.version>5.9.1</junit.version>
-        <logback.version>1.4.1</logback.version>
+        <logback.version>1.4.3</logback.version>
     </properties>
 
     <dependencyManagement>
