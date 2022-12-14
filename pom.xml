@@ -27,7 +27,7 @@
 
         <jsr305.version>3.0.2</jsr305.version>
         <slf4j.version>2.0.6</slf4j.version>
-        <immutables.version>2.9.2</immutables.version>
+        <immutables.version>2.9.3</immutables.version>
 
         <junit.version>5.9.1</junit.version>
         <logback.version>1.4.5</logback.version>
